@@ -1,7 +1,10 @@
 import Sprite   from '../base/sprite'
 import DataBus  from '../databus'
 
-import BULLET_IMG_SRC from '../config/config'
+import { 
+  BULLET_IMG_SRC
+} from '../config/index'
+
 const BULLET_WIDTH   = 16
 const BULLET_HEIGHT  = 30
 
