@@ -1,6 +1,7 @@
 import Sprite   from '../base/sprite'
 import DataBus  from '../databus'
 import Bullet   from './../player/bullet'
+import Movement from './../utils/movement'
 
 const screenWidth    = window.innerWidth
 const screenHeight   = window.innerHeight
@@ -25,6 +26,7 @@ export default class Chase extends Sprite {
     this.direction = true
 
     this.bullets = []
+    this.movement = new Movement()
   }
 
   /**
@@ -69,6 +71,10 @@ export default class Chase extends Sprite {
   }
   // 更新
   update() {
+    if(!this.movement.canMove) {
+      return
+    }
+
     if(this.direction) {
         this.x -= BE_CHASED_X_SPEED
     } else {
