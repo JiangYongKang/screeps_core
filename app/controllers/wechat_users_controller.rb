@@ -1,3 +1,5 @@
+require "net/http"
+
 class WechatUsersController < ApplicationController
   def create
     @wechat_user = WechatUser.find_or_create_by!(open_id: open_id)
