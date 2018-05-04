@@ -6,10 +6,11 @@ import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
 import DataBus from './databus'
+import { 
+  MAX_LIFE
+} from './config/index'
 
-//常量
-let life = 3
-
+let life = MAX_LIFE
 let ctx = canvas.getContext('2d')
 let databus = new DataBus()
 
@@ -76,6 +77,8 @@ export default class Main {
       this.bindLoop,
       canvas
     )
+
+    life = MAX_LIFE
   }
 
   /**
@@ -114,16 +117,18 @@ export default class Main {
       }
     })
 
-    databus.badBullets.forEach((bullet) => {
-      if (this.player.isCollideWith(bullet))  {
+    for (let i = 0, il = databus.badBullets.length; i< il; i++) {
+      let badBullet = databus.badBullets[i]
+      if (this.player.isCollideWith(badBullet))  {
         // 玩家被击中的效果
-        bullet.visible = false
+        badBullet.visible = false
         life -= 1
         if(life <= 0) {
           databus.gameOver = true
         }
+        break
       }
-    })
+    }
 
     for (let i = 0, il = databus.obstacles.length; i < il; i++) {
       let obstacle = databus.obstacles[i]
