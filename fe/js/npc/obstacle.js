@@ -1,9 +1,9 @@
 import Animation from '../base/animation'
 import DataBus   from '../databus'
 
-const OBSTACLE_IMG_SRC = 'images/enemy.png'
+const OBSTACLE_IMG_SRC = 'images/friendzonedCard.png'
 const OBSTACLE_WIDTH   = 60
-const OBSTACLE_HEIGHT  = 60
+const OBSTACLE_HEIGHT  = 25
 
 const __ = {
   speed: Symbol('speed')
