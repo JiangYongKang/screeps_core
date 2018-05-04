@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 20180504114947) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "wechat_users", force: :cascade do |t|
     t.string "open_id"
     t.string "nickname"
