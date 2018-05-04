@@ -1,1 +1,1 @@
-# strikingly-game-jam
+# screeps_core
