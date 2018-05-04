@@ -1,12 +1,14 @@
 import Sprite   from '../base/sprite'
 import DataBus  from '../databus'
 import Movement from './../utils/movement'
+import { 
+  GODMAN_IMG_SRC,
+  screenWidth,
+  screenHeight,
+} from '../config/index'
 
-const screenWidth    = window.innerWidth
-const screenHeight   = window.innerHeight
 
 // be-chased被追者相关常量设置
-const BE_CHASED_IMG_SRC = 'images/hero.png'
 const BE_CHASED_WIDTH   = 80
 const BE_CHASED_HEIGHT  = 80
 const BE_CHASED_X_SPEED = 1
@@ -19,7 +21,7 @@ let databus = new DataBus()
 
 export default class Godman extends Sprite {
   constructor() {
-    super(BE_CHASED_IMG_SRC, BE_CHASED_WIDTH, BE_CHASED_HEIGHT)
+    super(GODMAN_IMG_SRC, BE_CHASED_WIDTH, BE_CHASED_HEIGHT)
 
     // 玩家默认处于屏幕底部居中位置
     this.x = screenWidth / 2 - this.width / 2
