@@ -1,6 +1,7 @@
 class WechatUsersController < ApplicationController
   def create
-    @wechat_user = WechatUser.create!(create_params)
+    @wechat_user = WechatUser.find_or_create_by!(open_id: open_id)
+    @wechat_user.update!(wechat_user_params)
   end
 
   def update
@@ -16,8 +17,8 @@ class WechatUsersController < ApplicationController
 
   private
 
-  def create_params
-    params.require(:wechat_user).permit(:open_id, :nickname, :picture)
+  def wechat_user_params
+    params.require(:wechat_user).permit(:nickname, :picture)
   end
 
   def update_params
@@ -26,5 +27,17 @@ class WechatUsersController < ApplicationController
 
   def destroy_params
     params.permit(:id)
+  end
+
+  def open_id
+    uri = URI.parse('https://api.weixin.qq.com/sns/jscode2session')
+    uri.query = URI.encode_www_form({
+        appid: 'wxcc167c30f24a91fe',
+        secret: '5bda176375e2a798748b5c35c9c38941',
+        js_code: params['code'],
+        grant_type: 'authorization_code'
+    })
+    response_body = JSON.parse(Net::HTTP.get_response(uri).body)
+    response_body['openid']
   end
 end

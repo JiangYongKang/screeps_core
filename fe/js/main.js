@@ -18,9 +18,36 @@ let databus = new DataBus()
  */
 export default class Main {
   constructor() {
+
+    wx.login({
+      success: function(res) {
+        console.log('code = ' + res.code)
+        wx.getUserInfo({
+          success: function(resp) {
+            wx.request({
+              method: 'POST',
+              url: 'https://strikingly-game-jam.herokuapp.com/wechat_users',
+              data: {
+                code: res.code,
+                nickname: resp.userInfo.nickName,
+                picture: resp.userInfo.avatarUrl,
+              },
+              success: function(res) {
+                console.log('登录成功!')
+                console.log(res)
+                GameGlobal.user_info = {
+                  id: res.data.wechat_user.id,
+                  open_id: res.data.wechat_user.open_id
+                }
+              }
+            })
+          }
+        })
+      }
+    })
+
     // 维护当前requestAnimationFrame的id
     this.aniId = 0
-
     this.restart()
   }
 
@@ -69,13 +96,13 @@ export default class Main {
     databus.bullets.forEach((bullet) => {
       for (let i = 0, il = databus.obstacles.length; i < il; i++) {
         let obstacle = databus.obstacles[i]
-          
+
         if (!obstacle.isPlaying && obstacle.isCollideWith(bullet)) {
           obstacle.playAnimation()
           that.music.playExplosion()
 
           bullet.visible = false
-          
+
           break
         }
       }
@@ -90,7 +117,7 @@ export default class Main {
       let obstacle = databus.obstacles[i]
 
       if (this.player.isCollideWith(obstacle)) {
-        
+
         obstacle.playAnimation()
         life -= 1
         if(life <= 0) {

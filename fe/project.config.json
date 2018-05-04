@@ -8,7 +8,7 @@
 		"newFeature": true
 	},
 	"compileType": "game",
-	"libVersion": "game",
+	"libVersion": "2.0.2",
 	"appid": "wxcc167c30f24a91fe",
 	"projectname": "%E6%92%A9%E4%BD%A0",
 	"condition": {
