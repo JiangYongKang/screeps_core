@@ -1,9 +1,9 @@
 import Animation from '../base/animation'
 import DataBus   from '../databus'
 
-const ENEMY_IMG_SRC = 'images/enemy.png'
-const ENEMY_WIDTH   = 60
-const ENEMY_HEIGHT  = 60
+const OBSTACLE_IMG_SRC = 'images/enemy.png'
+const OBSTACLE_WIDTH   = 60
+const OBSTACLE_HEIGHT  = 60
 
 const __ = {
   speed: Symbol('speed')
@@ -15,15 +15,15 @@ function rnd(start, end){
   return Math.floor(Math.random() * (end - start) + start)
 }
 
-export default class Enemy extends Animation {
+export default class Obstacle extends Animation {
   constructor() {
-    super(ENEMY_IMG_SRC, ENEMY_WIDTH, ENEMY_HEIGHT)
+    super(OBSTACLE_IMG_SRC, OBSTACLE_WIDTH, OBSTACLE_HEIGHT)
 
     this.initExplosionAnimation()
   }
 
   init(speed) {
-    this.x = rnd(0, window.innerWidth - ENEMY_WIDTH)
+    this.x = rnd(0, window.innerWidth - OBSTACLE_WIDTH)
     this.y = -this.height
 
     this[__.speed] = speed
@@ -51,6 +51,6 @@ export default class Enemy extends Animation {
 
     // 对象回收
     if ( this.y > window.innerHeight + this.height )
-      databus.removeEnemey(this)
+      databus.removeObstacle(this)
   }
 }

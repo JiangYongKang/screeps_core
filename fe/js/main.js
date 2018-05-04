@@ -1,5 +1,6 @@
 import Player from './player/index'
-import Enemy from './npc/enemy'
+import Obstacle from './npc/obstacle'
+import BeChased from './npc/be-chased'
 import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
@@ -48,24 +49,30 @@ export default class Main {
    * 随着帧数变化的敌机生成逻辑
    * 帧数取模定义成生成的频率
    */
-  enemyGenerate() {
+  obstacleGenerate() {
     if (databus.frame % 30 === 0) {
-      let enemy = databus.pool.getItemByClass('enemy', Enemy)
-      enemy.init(6)
-      databus.enemys.push(enemy)
+      let obstacle = databus.pool.getItemByClass('obstacle', Obstacle)
+      obstacle.init(6)
+      databus.obstacles.push(obstacle)
     }
   }
-
+  beChasedGenerate() {
+    if (databus.frame % 30 === 0) {
+      let beChased = databus.pool.getItemByClass('beChased', BeChased)
+      beChased.init(1)
+      databus.beChased.push(obstacle)
+    }
+  }
   // 全局碰撞检测
   collisionDetection() {
     let that = this
 
     databus.bullets.forEach((bullet) => {
-      for (let i = 0, il = databus.enemys.length; i < il; i++) {
-        let enemy = databus.enemys[i]
-
-        if (!enemy.isPlaying && enemy.isCollideWith(bullet)) {
-          enemy.playAnimation()
+      for (let i = 0, il = databus.obstacles.length; i < il; i++) {
+        let obstacle = databus.obstacles[i]
+          
+        if (!obstacle.isPlaying && obstacle.isCollideWith(bullet)) {
+          obstacle.playAnimation()
           that.music.playExplosion()
 
           bullet.visible = false
@@ -76,10 +83,10 @@ export default class Main {
       }
     })
 
-    for (let i = 0, il = databus.enemys.length; i < il; i++) {
-      let enemy = databus.enemys[i]
+    for (let i = 0, il = databus.obstacles.length; i < il; i++) {
+      let obstacle = databus.obstacles[i]
 
-      if (this.player.isCollideWith(enemy)) {
+      if (this.player.isCollideWith(obstacle)) {
         databus.gameOver = true
 
         break
@@ -113,7 +120,7 @@ export default class Main {
     this.bg.render(ctx)
 
     databus.bullets
-      .concat(databus.enemys)
+      .concat(databus.obstacles)
       .forEach((item) => {
         item.drawToCanvas(ctx)
       })
@@ -148,12 +155,12 @@ export default class Main {
     this.bg.update()
 
     databus.bullets
-      .concat(databus.enemys)
+      .concat(databus.obstacles)
       .forEach((item) => {
         item.update()
       })
 
-    this.enemyGenerate()
+    this.obstacleGenerate()
 
     this.collisionDetection()
 
