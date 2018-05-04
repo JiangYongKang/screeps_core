@@ -186,6 +186,7 @@ export default class Main {
     })
 
     this.gameinfo.renderGameScore(ctx, databus.score)
+    this.gameinfo.renderPlayerLife(ctx, life)
 
     // 游戏结束停止帧循环
     if (databus.gameOver) {

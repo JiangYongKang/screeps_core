@@ -10,9 +10,20 @@ export default class GameInfo {
     ctx.font      = "20px Arial"
 
     ctx.fillText(
-      score,
+      '得分: ' + score,
       10,
       30
+    )
+  }
+
+  renderPlayerLife(ctx, life) {
+    ctx.fillStyle = "#ffffff"
+    ctx.font      = "20px Arial"
+
+    ctx.fillText(
+      '生命: ' + life,
+      10,
+      50
     )
   }
 
