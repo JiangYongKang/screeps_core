@@ -1,5 +1,6 @@
 import Sprite   from '../base/sprite'
 import DataBus  from '../databus'
+import Movement from './../utils/movement'
 
 const screenWidth    = window.innerWidth
 const screenHeight   = window.innerHeight
@@ -8,11 +9,15 @@ const screenHeight   = window.innerHeight
 const BE_CHASED_IMG_SRC = 'images/hero.png'
 const BE_CHASED_WIDTH   = 80
 const BE_CHASED_HEIGHT  = 80
-const BE_CHASED_X_SPEED = 5
+const BE_CHASED_X_SPEED = 2
 
 let databus = new DataBus()
 
-export default class BeChased extends Sprite {
+/**
+ * 这是你男神
+ */
+
+export default class Godman extends Sprite {
   constructor() {
     super(BE_CHASED_IMG_SRC, BE_CHASED_WIDTH, BE_CHASED_HEIGHT)
 
@@ -22,6 +27,7 @@ export default class BeChased extends Sprite {
 
     // true: left; false: right
     this.direction = true
+    this.movement = new Movement()
   }
 
   /**
@@ -66,6 +72,10 @@ export default class BeChased extends Sprite {
   }
   // 更新
   update() {
+    if(!this.movement.canMove) {
+      return
+    }
+
     if(this.direction) {
         this.x -= BE_CHASED_X_SPEED
     } else {

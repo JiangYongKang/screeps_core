@@ -1,6 +1,7 @@
 import Sprite   from '../base/sprite'
 import DataBus  from '../databus'
 import Bullet   from './../player/bullet'
+import Movement from './../utils/movement'
 
 const screenWidth    = window.innerWidth
 const screenHeight   = window.innerHeight
@@ -9,11 +10,15 @@ const screenHeight   = window.innerHeight
 const BE_CHASED_IMG_SRC = 'images/hero.png'
 const BE_CHASED_WIDTH   = 80
 const BE_CHASED_HEIGHT  = 80
-const BE_CHASED_X_SPEED = 5
+const BE_CHASED_X_SPEED = 3
 
 let databus = new DataBus()
 
-export default class Chase extends Sprite {
+/**
+ * Badman 会阻止你追男神
+ */
+
+export default class Badman extends Sprite {
   constructor() {
     super(BE_CHASED_IMG_SRC, BE_CHASED_WIDTH, BE_CHASED_HEIGHT)
 
@@ -25,6 +30,7 @@ export default class Chase extends Sprite {
     this.direction = true
 
     this.bullets = []
+    this.movement = new Movement()
   }
 
   /**
@@ -69,6 +75,10 @@ export default class Chase extends Sprite {
   }
   // 更新
   update() {
+    if(!this.movement.canMove) {
+      return
+    }
+
     if(this.direction) {
         this.x -= BE_CHASED_X_SPEED
     } else {
