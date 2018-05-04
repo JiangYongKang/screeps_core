@@ -89,7 +89,7 @@ export default class Main {
     // TODO: FIXME
     if (databus.frame % 100 === 0) {
       let obstacle = databus.pool.getItemByClass('obstacle', Obstacle)
-      obstacle.init(6)
+      obstacle.init(3)
       databus.obstacles.push(obstacle)
     }
   }

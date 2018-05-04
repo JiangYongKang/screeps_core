@@ -9,7 +9,7 @@ const screenHeight   = window.innerHeight
 const BE_CHASED_IMG_SRC = 'images/hero.png'
 const BE_CHASED_WIDTH   = 80
 const BE_CHASED_HEIGHT  = 80
-const BE_CHASED_X_SPEED = 2
+const BE_CHASED_X_SPEED = 1
 
 let databus = new DataBus()
 

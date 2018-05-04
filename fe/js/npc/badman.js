@@ -10,7 +10,7 @@ const screenHeight   = window.innerHeight
 const BE_CHASED_IMG_SRC = 'images/hero.png'
 const BE_CHASED_WIDTH   = 80
 const BE_CHASED_HEIGHT  = 80
-const BE_CHASED_X_SPEED = 3
+const BE_CHASED_X_SPEED = 2
 
 let databus = new DataBus()
 
@@ -101,7 +101,7 @@ export default class Badman extends Sprite {
     bullet.init(
       this.x + this.width / 2 - bullet.width / 2,
       this.y - 10,
-      10
+      6
     )
 
     databus.badBullets.push(bullet)
