@@ -1,5 +1,6 @@
 import Sprite   from '../base/sprite'
 import DataBus  from '../databus'
+import Bullet   from './../player/bullet'
 import Movement from './../utils/movement'
 
 const screenWidth    = window.innerWidth
@@ -9,20 +10,26 @@ const screenHeight   = window.innerHeight
 const BE_CHASED_IMG_SRC = 'images/hero.png'
 const BE_CHASED_WIDTH   = 80
 const BE_CHASED_HEIGHT  = 80
-const BE_CHASED_X_SPEED = 5
+const BE_CHASED_X_SPEED = 3
 
 let databus = new DataBus()
 
-export default class BeChased extends Sprite {
+/**
+ * Badman 会阻止你追男神
+ */
+
+export default class Badman extends Sprite {
   constructor() {
     super(BE_CHASED_IMG_SRC, BE_CHASED_WIDTH, BE_CHASED_HEIGHT)
 
     // 玩家默认处于屏幕底部居中位置
     this.x = screenWidth / 2 - this.width / 2
-    this.y = this.height - 70
+    this.y = screenHeight - 70
 
     // true: left; false: right
     this.direction = true
+
+    this.bullets = []
     this.movement = new Movement()
   }
 
@@ -84,4 +91,19 @@ export default class BeChased extends Sprite {
 
   }
 
+   /**
+   * 追击者射击操作
+   * 射击时机由外部决定
+   */
+  shoot() {
+    let bullet = databus.pool.getItemByClass('bullet', Bullet)
+
+    bullet.init(
+      this.x + this.width / 2 - bullet.width / 2,
+      this.y - 10,
+      10
+    )
+
+    databus.bullets.push(bullet)
+  }
 }

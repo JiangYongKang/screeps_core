@@ -1,7 +1,7 @@
 import Player from './player/index'
 import Obstacle from './npc/obstacle'
-import BeChased from './npc/be-chased'
-import Chase from './npc/chase'
+import Godman from './npc/godman'
+import Badman from './npc/badman'
 import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
@@ -34,8 +34,8 @@ export default class Main {
 
     this.bg = new BackGround(ctx)
     this.player = new Player(ctx)
-    this.beChased = new BeChased(ctx)
-    this.chase = new Chase(ctx)
+    this.godman = new Godman(ctx)
+    this.badman = new Badman(ctx)
     this.gameinfo = new GameInfo()
     this.music = new Music()
 
@@ -80,7 +80,7 @@ export default class Main {
         }
       }
       // 被追者记分判断
-      if (this.beChased.isCollideWith(bullet)) {
+      if (this.godman.isCollideWith(bullet)) {
         bullet.visible = false
         databus.score += 1
       }
@@ -133,8 +133,8 @@ export default class Main {
       })
 
     this.player.drawToCanvas(ctx)
-    this.beChased.drawToCanvas(ctx)
-    this.chase.drawToCanvas(ctx)
+    this.godman.drawToCanvas(ctx)
+    this.badman.drawToCanvas(ctx)
     databus.animations.forEach((ani) => {
       if (ani.isPlaying) {
         ani.aniRender(ctx)
@@ -161,8 +161,8 @@ export default class Main {
       return;
 
     this.bg.update()
-    this.beChased.update()
-    this.chase.update()
+    this.godman.update()
+    this.badman.update()
     databus.bullets
       .concat(databus.obstacles)
       .forEach((item) => {
@@ -175,7 +175,7 @@ export default class Main {
 
     if (databus.frame % 20 === 0) {
       this.player.shoot()
-      this.chase.shoot()
+      this.badman.shoot()
       this.music.playShoot()
     }
   }
