@@ -18,7 +18,8 @@ export default class Player extends Sprite {
 
     // 玩家默认处于屏幕底部居中位置
     this.x = screenWidth / 2 - this.width / 2
-    this.y = screenHeight - this.height - 30
+    // TODO: FIXME
+    this.y = screenHeight - this.height - 100
 
     // 用于在手指移动的时候标识手指是否已经在飞机上了
     this.touched = false
@@ -118,7 +119,7 @@ export default class Player extends Sprite {
     bullet.init(
       this.x + this.width / 2 - bullet.width / 2,
       this.y - 10,
-      10
+      6
     )
 
     databus.loveBullets.push(bullet)

@@ -15,7 +15,7 @@ const __ = {
 let databus = new DataBus()
 
 export default class Bullet extends Sprite {
-  constructor(type = 0, skins = BULLET_IMG_SRC) {
+  constructor(skins) {
     super(skins, BULLET_WIDTH, BULLET_HEIGHT)
   }
 
