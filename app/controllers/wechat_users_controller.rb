@@ -10,6 +10,10 @@ class WechatUsersController < ApplicationController
     end
   end
 
+  def destroy
+    WechatUser.find(destroy_params['id']).destroy
+  end
+
   private
 
   def create_params
@@ -18,5 +22,9 @@ class WechatUsersController < ApplicationController
 
   def update_params
     params.permit(:id, :max_score)
+  end
+
+  def destroy_params
+    params.permit(:id)
   end
 end
