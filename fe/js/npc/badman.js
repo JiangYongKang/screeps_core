@@ -1,6 +1,6 @@
 import Sprite   from '../base/sprite'
 import DataBus  from '../databus'
-import Bullet   from './../player/bullet'
+import BadBullet   from './../player/badBullet'
 import Movement from './../utils/movement'
 
 const screenWidth    = window.innerWidth
@@ -96,7 +96,7 @@ export default class Badman extends Sprite {
    * 射击时机由外部决定
    */
   shoot() {
-    let bullet = databus.pool.getItemByClass('bullet', Bullet)
+    let bullet = databus.pool.getItemByClass('badBullet', BadBullet)
 
     bullet.init(
       this.x + this.width / 2 - bullet.width / 2,
@@ -104,6 +104,6 @@ export default class Badman extends Sprite {
       10
     )
 
-    databus.bullets.push(bullet)
+    databus.badBullets.push(bullet)
   }
 }

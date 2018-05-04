@@ -83,7 +83,8 @@ export default class Main {
    * 帧数取模定义成生成的频率
    */
   obstacleGenerate() {
-    if (databus.frame % 30 === 0) {
+    // TODO: FIXME
+    if (databus.frame % 100 === 0) {
       let obstacle = databus.pool.getItemByClass('obstacle', Obstacle)
       obstacle.init(6)
       databus.obstacles.push(obstacle)
@@ -93,7 +94,7 @@ export default class Main {
   collisionDetection() {
     let that = this
 
-    databus.bullets.forEach((bullet) => {
+    databus.loveBullets.forEach((bullet) => {
       for (let i = 0, il = databus.obstacles.length; i < il; i++) {
         let obstacle = databus.obstacles[i]
 
@@ -110,6 +111,17 @@ export default class Main {
       if (this.godman.isCollideWith(bullet)) {
         bullet.visible = false
         databus.score += 1
+      }
+    })
+
+    databus.badBullets.forEach((bullet) => {
+      if (this.player.isCollideWith(bullet))  {
+        // 玩家被击中的效果
+        bullet.visible = false
+        life -= 1
+        if(life <= 0) {
+          databus.gameOver = true
+        }
       }
     })
 
@@ -153,7 +165,7 @@ export default class Main {
 
     this.bg.render(ctx)
 
-    databus.bullets
+    databus.bullets()
       .concat(databus.obstacles)
       .forEach((item) => {
         item.drawToCanvas(ctx)
@@ -190,7 +202,7 @@ export default class Main {
     this.bg.update()
     this.godman.update()
     this.badman.update()
-    databus.bullets
+    databus.bullets()
       .concat(databus.obstacles)
       .forEach((item) => {
         item.update()
@@ -202,8 +214,12 @@ export default class Main {
 
     if (databus.frame % 20 === 0) {
       this.player.shoot()
-      this.badman.shoot()
       this.music.playShoot()
+    }
+
+    // TODO: FIXME
+    if (databus.frame % 100 === 0) {
+      this.badman.shoot()
     }
   }
 

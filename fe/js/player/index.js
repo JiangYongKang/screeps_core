@@ -1,5 +1,5 @@
 import Sprite   from '../base/sprite'
-import Bullet   from './bullet'
+import LoveBullet from './loveBullet'
 import DataBus  from '../databus'
 
 const screenWidth    = window.innerWidth
@@ -113,7 +113,7 @@ export default class Player extends Sprite {
    * 射击时机由外部决定
    */
   shoot() {
-    let bullet = databus.pool.getItemByClass('bullet', Bullet)
+    let bullet = databus.pool.getItemByClass('loveBullet', LoveBullet)
 
     bullet.init(
       this.x + this.width / 2 - bullet.width / 2,
@@ -121,6 +121,6 @@ export default class Player extends Sprite {
       10
     )
 
-    databus.bullets.push(bullet)
+    databus.loveBullets.push(bullet)
   }
 }

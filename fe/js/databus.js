@@ -20,10 +20,12 @@ export default class DataBus {
   reset() {
     this.frame      = 0
     this.score      = 0
-    this.bullets    = []
-    this.obstacles     = []
+    this.obstacles  = []
     this.animations = []
     this.gameOver   = false
+
+    this.badBullets  = []
+    this.loveBullets = []
   }
 
   /**
@@ -42,11 +44,31 @@ export default class DataBus {
    * 回收子弹，进入对象池
    * 此后不进入帧循环
    */
-  removeBullets(bullet) {
-    let temp = this.bullets.shift()
+  removeLoveBullets(bullet) {
+    let temp = this.loveBullets.shift()
+    // if (!temp) {
+    //   return
+    // }
 
     temp.visible = false
 
-    this.pool.recover('bullet', bullet)
+    this.pool.recover('loveBullet', bullet)
   }
+
+  removeBadBullets(bullet) {
+    let temp = this.badBullets.shift()
+
+    // if (!temp) {
+    //   return
+    // }
+
+    temp.visible = false
+
+    this.pool.recover('badBullte', bullet)
+  }
+
+  bullets() {
+   return this.loveBullets.concat(this.badBullets)
+  }
+
 }

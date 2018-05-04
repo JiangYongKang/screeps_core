@@ -33,7 +33,13 @@ export default class Bullet extends Sprite {
     this.y -= this[__.speed]
 
     // 超出屏幕外回收自身
-    if ( this.y < -this.height )
-      databus.removeBullets(this)
+    if ( this.y < -this.height ) {
+      this.remove()
+    }
   }
+
+  remove() {
+    throw new Error('you should override this function')
+  }
+
 }
