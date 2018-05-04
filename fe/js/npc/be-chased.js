@@ -1,55 +1,81 @@
-import Animation from '../base/animation'
-import DataBus   from '../databus'
+import Sprite   from '../base/sprite'
+import DataBus  from '../databus'
 
-const OBSTACLE_IMG_SRC = 'images/enemy.png'
-const OBSTACLE_WIDTH   = 60
-const OBSTACLE_HEIGHT  = 60
+const screenWidth    = window.innerWidth
+const screenHeight   = window.innerHeight
 
-const __ = {
-  speed: Symbol('speed')
-}
+// be-chased被追者相关常量设置
+const BE_CHASED_IMG_SRC = 'images/hero.png'
+const BE_CHASED_WIDTH   = 80
+const BE_CHASED_HEIGHT  = 80
+const BE_CHASED_X_SPEED = 5
 
 let databus = new DataBus()
 
-function rnd(start, end){
-  return Math.floor(Math.random() * (end - start) + start)
-}
-
-export default class BeChased extends Animation {
+export default class BeChased extends Sprite {
   constructor() {
-    super(OBSTACLE_IMG_SRC, OBSTACLE_WIDTH, OBSTACLE_HEIGHT)
+    super(BE_CHASED_IMG_SRC, BE_CHASED_WIDTH, BE_CHASED_HEIGHT)
 
-    this.initExplosionAnimation()
+    // 玩家默认处于屏幕底部居中位置
+    this.x = screenWidth / 2 - this.width / 2
+    this.y = this.height - 70
+
+    // true: left; false: right
+    this.direction = true
   }
 
-  init(speed) {
-    this.x = rnd(0, window.innerWidth - OBSTACLE_WIDTH)
+  /**
+   * 当手指触摸屏幕的时候
+   * 判断手指是否在飞机上
+   * @param {Number} x: 手指的X轴坐标
+   * @param {Number} y: 手指的Y轴坐标
+   * @return {Boolean}: 用于标识手指是否在飞机上的布尔值
+   */
+  checkIsFingerOnAir(x, y) {
+    const deviation = 30
 
-    this[__.speed] = speed
-
-    this.visible = true
+    return !!(   x >= this.x - deviation
+              && y >= this.y - deviation
+              && x <= this.x + this.width + deviation
+              && y <= this.y + this.height + deviation  )
   }
 
-  // 预定义爆炸的帧动画
-  initExplosionAnimation() {
-    let frames = []
+  /**
+   * 根据手指的位置设置飞机的位置
+   * 保证手指处于飞机中间
+   * 同时限定飞机的活动范围限制在屏幕中
+   */
+  setAirPosAcrossFingerPosZ(x, y) {
+    let disX = x - this.width / 2
+    let disY = y - this.height / 2
 
-    const EXPLO_IMG_PREFIX  = 'images/explosion'
-    const EXPLO_FRAME_COUNT = 19
+    if ( disX < 0 )
+      disX = 0
 
-    for ( let i = 0;i < EXPLO_FRAME_COUNT;i++ ) {
-      frames.push(EXPLO_IMG_PREFIX + (i + 1) + '.png')
+    else if ( disX > screenWidth - this.width )
+      disX = screenWidth - this.width
+
+    if ( disY <= 0 )
+      disY = 0
+
+    else if ( disY > screenHeight - this.height )
+      disY = screenHeight - this.height
+
+    this.x = disX
+    this.y = disY
+  }
+  // 更新
+  update() {
+    if(this.direction) {
+        this.x -= BE_CHASED_X_SPEED
+    } else {
+        this.x += BE_CHASED_X_SPEED
     }
 
-    this.initFrames(frames)
+    if(screenWidth < (this.x + this.width) || 0 > this.x) { 
+        this.direction = !this.direction
+    }
+
   }
 
-  // 每一帧更新子弹位置
-  update() {
-    this.y += this[__.speed]
-
-    // 对象回收
-    if ( this.y > window.innerHeight + this.height )
-      databus.removeObstacle(this)
-  }
 }

@@ -1,10 +1,14 @@
 import Player from './player/index'
 import Obstacle from './npc/obstacle'
 import BeChased from './npc/be-chased'
+import Chase from './npc/chase'
 import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
 import DataBus from './databus'
+
+//常量
+let life = 3
 
 let ctx = canvas.getContext('2d')
 let databus = new DataBus()
@@ -30,6 +34,8 @@ export default class Main {
 
     this.bg = new BackGround(ctx)
     this.player = new Player(ctx)
+    this.beChased = new BeChased(ctx)
+    this.chase = new Chase(ctx)
     this.gameinfo = new GameInfo()
     this.music = new Music()
 
@@ -56,13 +62,6 @@ export default class Main {
       databus.obstacles.push(obstacle)
     }
   }
-  beChasedGenerate() {
-    if (databus.frame % 30 === 0) {
-      let beChased = databus.pool.getItemByClass('beChased', BeChased)
-      beChased.init(1)
-      databus.beChased.push(obstacle)
-    }
-  }
   // 全局碰撞检测
   collisionDetection() {
     let that = this
@@ -76,10 +75,14 @@ export default class Main {
           that.music.playExplosion()
 
           bullet.visible = false
-          databus.score += 1
-
+          
           break
         }
+      }
+      // 被追者记分判断
+      if (this.beChased.isCollideWith(bullet)) {
+        bullet.visible = false
+        databus.score += 1
       }
     })
 
@@ -87,8 +90,12 @@ export default class Main {
       let obstacle = databus.obstacles[i]
 
       if (this.player.isCollideWith(obstacle)) {
-        databus.gameOver = true
-
+        
+        obstacle.playAnimation()
+        life -= 1
+        if(life <= 0) {
+          databus.gameOver = true
+        }
         break
       }
     }
@@ -126,7 +133,8 @@ export default class Main {
       })
 
     this.player.drawToCanvas(ctx)
-
+    this.beChased.drawToCanvas(ctx)
+    this.chase.drawToCanvas(ctx)
     databus.animations.forEach((ani) => {
       if (ani.isPlaying) {
         ani.aniRender(ctx)
@@ -153,7 +161,8 @@ export default class Main {
       return;
 
     this.bg.update()
-
+    this.beChased.update()
+    this.chase.update()
     databus.bullets
       .concat(databus.obstacles)
       .forEach((item) => {
@@ -166,6 +175,7 @@ export default class Main {
 
     if (databus.frame % 20 === 0) {
       this.player.shoot()
+      this.chase.shoot()
       this.music.playShoot()
     }
   }

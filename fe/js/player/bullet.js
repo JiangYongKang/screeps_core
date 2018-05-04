@@ -1,7 +1,7 @@
 import Sprite   from '../base/sprite'
 import DataBus  from '../databus'
 
-const BULLET_IMG_SRC = 'images/bullet.png'
+import BULLET_IMG_SRC from '../config/config'
 const BULLET_WIDTH   = 16
 const BULLET_HEIGHT  = 30
 
@@ -12,8 +12,8 @@ const __ = {
 let databus = new DataBus()
 
 export default class Bullet extends Sprite {
-  constructor() {
-    super(BULLET_IMG_SRC, BULLET_WIDTH, BULLET_HEIGHT)
+  constructor(type = 0, skins = BULLET_IMG_SRC) {
+    super(skins, BULLET_WIDTH, BULLET_HEIGHT)
   }
 
   init(x, y, speed) {

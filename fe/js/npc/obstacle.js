@@ -48,7 +48,6 @@ export default class Obstacle extends Animation {
   // 每一帧更新子弹位置
   update() {
     this.y += this[__.speed]
-
     // 对象回收
     if ( this.y > window.innerHeight + this.height )
       databus.removeObstacle(this)
