@@ -1,12 +1,14 @@
 import Bullet from './bullet'
 import DataBus  from '../databus'
+import {
+  BAD_BULLET_IMG_SRC
+} from '../config/index'
 
 let databus = new DataBus()
 
 export default class BadBullet extends Bullet {
-  constructor(props) {
-     super(props)
-     // set up images
+  constructor() {
+     super(BAD_BULLET_IMG_SRC)
   }
   remove() {
     databus.removeBadBullets(this)
