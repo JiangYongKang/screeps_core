@@ -6,6 +6,7 @@ import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
 import DataBus from './databus'
+import Lifebar from './element/lifebar'
 import { STATE } from './databus'
 import { 
   MAX_LIFE,
@@ -89,6 +90,7 @@ export default class Main {
     )
 
     life = MAX_LIFE
+    this.lifebar = new Lifebar(ctx, life)
   }
 
   restart() {
@@ -117,6 +119,7 @@ export default class Main {
     )
 
     life = MAX_LIFE
+    this.lifebar = new Lifebar(ctx, life)
     
     this.badman = null
     clearInterval(intervalID)
@@ -182,7 +185,7 @@ export default class Main {
       if (this.player.isCollideWith(badBullet))  {
         // 玩家被击中的效果
         badBullet.playAnimation()
-        life -= 1
+        this.reduceLifeCount()
         if(life <= 0) {
           databus.state = STATE.OVER
         }
@@ -196,7 +199,7 @@ export default class Main {
       if (this.player.isCollideWith(obstacle)) {
 
         obstacle.playAnimation()
-        life -= 1
+        this.reduceLifeCount()
         if(life <= 0) {
           databus.state = STATE.OVER
         }
@@ -280,6 +283,11 @@ export default class Main {
       }
   }
 
+  reduceLifeCount() {
+    life -= 1
+    this.lifebar.reduceLifeCount()
+  }
+
   /**
    * canvas重绘函数
    * 每一帧重新绘制所有的需要展示的元素
@@ -307,7 +315,7 @@ export default class Main {
     })
 
     this.gameinfo.renderGameScore(ctx, databus.score)
-    this.gameinfo.renderPlayerLife(ctx, life)
+    this.lifebar.render(ctx)
 
     // 游戏初始化
     if(databus.state === STATE.BEGIN) {
