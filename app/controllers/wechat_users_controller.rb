@@ -4,6 +4,7 @@ class WechatUsersController < ApplicationController
   def create
     @wechat_user = WechatUser.find_or_create_by!(open_id: open_id)
     @wechat_user.update!(wechat_user_params)
+    render :create, formats: [:json], layout: nil
   end
 
   def update
@@ -11,10 +12,12 @@ class WechatUsersController < ApplicationController
     if @wechat_user.max_score < update_params['max_score']
       @wechat_user.update(max_score: update_params['max_score'])
     end
+    render :update, formats: [:json], layout: nil
   end
 
   def destroy
     WechatUser.find(destroy_params['id']).destroy
+    render :destroy, formats: [:json], layout: nil
   end
 
   private
