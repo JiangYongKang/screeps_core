@@ -1,7 +1,7 @@
 import Sprite   from '../base/sprite'
 import DataBus  from '../databus'
-import BadBullet   from './../player/badBullet'
-import Movement from './../utils/movement'
+import BadBullet   from '../bullet/badBullet'
+import Movement from '../utils/movement'
 import { 
   BADMAN_IMG_SRC,
   screenWidth,

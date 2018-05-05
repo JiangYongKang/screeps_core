@@ -1,5 +1,5 @@
 import Sprite   from '../base/sprite'
-import LoveBullet from './loveBullet'
+import LoveBullet from '../bullet/loveBullet'
 import DataBus  from '../databus'
 
 const screenWidth    = window.innerWidth

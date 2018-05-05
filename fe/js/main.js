@@ -1,5 +1,5 @@
 import Player from './player/index'
-import Obstacle from './npc/obstacle'
+import Obstacle from './element/obstacle'
 import Godman from './npc/godman'
 import Badman from './npc/badman'
 import BackGround from './runtime/background'
