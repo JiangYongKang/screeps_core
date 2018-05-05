@@ -116,6 +116,7 @@ export default class Main {
 
     life = MAX_LIFE
     
+    this.badman = null
     clearInterval(intervalID)
     appearredBadman = false
   }
