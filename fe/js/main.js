@@ -147,6 +147,7 @@ export default class Main {
       if (this.godman.isCollideWith(bullet)) {
         bullet.visible = false
         databus.score += 1
+        bullet.playAnimation()
       }
     })
 
