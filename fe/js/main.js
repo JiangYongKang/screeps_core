@@ -179,7 +179,7 @@ export default class Main {
   }
 
   //begin 触摸事件
-  beginTouchEventHandler(e) {
+  beginTouchEventHandler = (e) => {
     e.preventDefault()
 
     let x = e.touches[0].clientX
@@ -194,6 +194,7 @@ export default class Main {
       {
         databus.state = STATE.RUN
         this.restart()
+        return
       }
     let rank = this.gameinfo.btnRank
     if (x >= rank.startX
@@ -201,12 +202,32 @@ export default class Main {
       && y >= rank.startY
       && y <= rank.endY)
       {
+        databus.state = STATE.RANK
+        this.gameinfo.renderRank(ctx)
         console.log('rank')
       }
   }
 
+   //rank 触摸事件
+   rankTouchEventHandler = (e) => {
+    e.preventDefault()
+
+    let x = e.touches[0].clientX
+    let y = e.touches[0].clientY
+
+
+    let rankClose = this.gameinfo.btnRankClose
+    if (x >= rankClose.startX
+      && x <= rankClose.endX
+      && y >= rankClose.startY
+      && y <= rankClose.endY)
+      {
+        databus.state = STATE.BEGIN
+      }
+  }
+
   // 游戏结束后的触摸事件处理逻辑
-  touchEventHandler(e) {
+  touchEventHandler = (e) => {
     e.preventDefault()
 
     let x = e.touches[0].clientX
@@ -218,8 +239,17 @@ export default class Main {
       && x <= area.endX
       && y >= area.startY
       && y <= area.endY){
-        console.log(213)
+    
         this.restart()
+      }
+
+    let toBegin = this.gameinfo.btnToBegin
+    if (x >= toBegin.startX
+      && x <= toBegin.endX
+      && y >= toBegin.startY
+      && y <= toBegin.endY){
+    
+        databus.state = STATE.BEGIN
       }
   }
 
@@ -252,23 +282,26 @@ export default class Main {
 
     // 游戏初始化
     if(databus.state === STATE.BEGIN) {
+      this.clearTouchEvent()
       this.gameinfo.renderGameBegin(ctx)
+  
       if (!this.hasEventBind) {
         this.hasEventBind = true
-        this.touchHandler = this.beginTouchEventHandler.bind(this)
+        this.touchHandler = this.beginTouchEventHandler
         canvas.addEventListener('touchstart', this.touchHandler)
       }
+    }
+
+    if(databus.state === STATE.RANK) {
+      this.clearTouchEvent()
+      this.gameinfo.renderRank(ctx)
+      this.bindTouchEvent(this.rankTouchEventHandler)
     }
 
     // 游戏结束停止帧循环
     if (databus.state === STATE.OVER) {
       this.gameinfo.renderGameOver(ctx, databus.score)
-
-      if (!this.hasEventBind) {
-        this.hasEventBind = true
-        this.touchHandler = this.touchEventHandler.bind(this)
-        canvas.addEventListener('touchstart', this.touchHandler)
-      }
+      this.bindTouchEvent(this.touchEventHandler)
     }
   }
 
@@ -312,5 +345,23 @@ export default class Main {
       this.bindLoop,
       canvas
     )
+  }
+  
+  //清除touch事件
+  clearTouchEvent() {
+    canvas.removeEventListener(
+      'touchstart',
+      this.touchHandler
+    )
+    this.hasEventBind = false
+  }
+
+  // 绑定touch事件
+  bindTouchEvent(func) {
+    if (!this.hasEventBind) {
+      this.hasEventBind = true
+      this.touchHandler = func
+      canvas.addEventListener('touchstart', this.touchHandler)
+    }
   }
 }

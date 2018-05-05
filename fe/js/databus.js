@@ -20,7 +20,7 @@ export default class DataBus {
     instance = this
 
     this.pool = new Pool()
-    this.state = STATE.BEGIN
+    this.state = STATE.RANK
     this.isBegin = true
     this.reset()
   }
