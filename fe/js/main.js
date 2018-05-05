@@ -10,6 +10,8 @@ import { STATE } from './databus'
 import { 
   MAX_LIFE,
   screenHeight,
+  INCREMENT_WHEN_HIT_FRIEND_ZONED_CARD,
+  INCREMENT_WHEN_HIT_GOD_MAN,
 } from './config/index'
 
 let life = MAX_LIFE
@@ -161,14 +163,14 @@ export default class Main {
           that.music.playExplosion()
 
           bullet.visible = false
-
+          databus.score += INCREMENT_WHEN_HIT_FRIEND_ZONED_CARD
           break
         }
       }
       // 被追者记分判断
       if (this.godman.isCollideWith(bullet)) {
         bullet.visible = false
-        databus.score += 1
+        databus.score += INCREMENT_WHEN_HIT_GOD_MAN
         bullet.playAnimation()
       }
     })

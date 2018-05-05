@@ -11,6 +11,9 @@ export const screenHeight   = window.innerHeight
 
 export const BOTTOM_IMAGE_HEIGHT = 170
 
+export const INCREMENT_WHEN_HIT_FRIEND_ZONED_CARD = 2
+export const INCREMENT_WHEN_HIT_GOD_MAN = 1
+
 // 初始界面资源
 export let begin = new Image()
 begin.src = 'images/begin.png'

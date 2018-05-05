@@ -16,8 +16,8 @@ const __ = {
 let databus = new DataBus()
 
 export default class Bullet extends Animation {
-  constructor(skins) {
-    super(skins, BULLET_WIDTH, BULLET_HEIGHT)
+  constructor(skins, width = BULLET_WIDTH, height = BULLET_HEIGHT) {
+    super(skins, width, height)
   }
 
   init(x, y, speed) {

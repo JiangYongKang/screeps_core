@@ -8,7 +8,7 @@ let databus = new DataBus()
 
 export default class BadBullet extends Bullet {
   constructor() {
-     super(BAD_BULLET_IMG_SRC)
+     super(BAD_BULLET_IMG_SRC, 50, 50)
   }
   remove() {
     databus.removeBadBullets(this)
