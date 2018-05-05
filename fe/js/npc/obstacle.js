@@ -23,6 +23,7 @@ export default class Obstacle extends Animation {
     super(OBSTACLE_IMG_SRC, OBSTACLE_WIDTH, OBSTACLE_HEIGHT)
 
     this.initExplosionAnimation()
+    this.animationScale = 1.2
   }
 
   init(speed) {
@@ -38,8 +39,8 @@ export default class Obstacle extends Animation {
   initExplosionAnimation() {
     let frames = []
 
-    const EXPLO_IMG_PREFIX  = 'images/explosion'
-    const EXPLO_FRAME_COUNT = 19
+    const EXPLO_IMG_PREFIX  = 'images/friendzonedCard/好人卡'
+    const EXPLO_FRAME_COUNT = 17
 
     for ( let i = 0;i < EXPLO_FRAME_COUNT;i++ ) {
       frames.push(EXPLO_IMG_PREFIX + (i + 1) + '.png')
