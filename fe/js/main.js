@@ -15,12 +15,10 @@ import {
   INCREMENT_WHEN_HIT_FRIEND_ZONED_CARD,
   INCREMENT_WHEN_HIT_GOD_MAN,
 } from './config/index'
+import ExecuteOnceWrapper from './utils/executeOnceWrapper'
 
-let life = MAX_LIFE
 let ctx = canvas.getContext('2d')
 let databus = new DataBus()
-let intervalID = null
-let appearredBadman = false
 
 /**
  * 游戏主函数
@@ -57,7 +55,6 @@ export default class Main {
 
     // 维护当前requestAnimationFrame的id
     this.aniId = 0
-    // this.restart()
     this.runGame()
   }
 
@@ -88,8 +85,9 @@ export default class Main {
       canvas
     )
 
-    life = MAX_LIFE
-    this.lifebar = new Lifebar(ctx, life)
+    this.life = MAX_LIFE
+    this.lifebar = new Lifebar(ctx, this.life)
+    this.executeOnceWrapper = new ExecuteOnceWrapper()
   }
 
   restart() {
@@ -117,30 +115,26 @@ export default class Main {
       canvas
     )
 
-    life = MAX_LIFE
-    this.lifebar = new Lifebar(ctx, life)
+    this.life = MAX_LIFE
+    this.lifebar = new Lifebar(ctx, this.life)
     
-    this.badman = null
-    clearInterval(intervalID)
-    appearredBadman = false
+    this.clearBadman()
+    this.executeOnceWrapper.reset()
   }
 
   setupBadman() {
-    if (appearredBadman) {
-      return
-    }
-    appearredBadman = true
-    this.badman = new Badman(ctx)    
-    this.appearBadman()
-  }
-
-  appearBadman() {
+    this.badman = new Badman(ctx) 
     this.badman.y = screenHeight + 80
-    intervalID = setInterval(() => {
+    this.badminAppearIntervalID = setInterval(() => {
       if (this.badman.y > screenHeight - 70) {
         this.badman.y -= 1.5
       }
-    }, 1000/60);
+    }, 1000/60);   
+  }
+
+  clearBadman() {
+    this.badman = null
+    clearInterval(this.badminAppearIntervalID)
   }
 
   /**
@@ -185,7 +179,7 @@ export default class Main {
         // 玩家被击中的效果
         badBullet.playAnimation()
         this.reduceLifeCount()
-        if(life <= 0) {
+        if(this.life <= 0) {
           databus.state = STATE.OVER
         }
         break
@@ -199,7 +193,7 @@ export default class Main {
 
         obstacle.playAnimation()
         this.reduceLifeCount()
-        if(life <= 0) {
+        if(this.life <= 0) {
           databus.state = STATE.OVER
         }
         break
@@ -283,7 +277,7 @@ export default class Main {
   }
 
   reduceLifeCount() {
-    life -= 1
+    this.life -= 1
     this.lifebar.reduceLifeCount()
   }
 
@@ -372,7 +366,9 @@ export default class Main {
     }
 
     if (databus.score > 9) {
-      this.setupBadman()
+      this.executeOnceWrapper.executeOnce(() => {
+        this.setupBadman()
+      })
     }
   }
 
