@@ -2,6 +2,9 @@
 const screenWidth  = window.innerWidth
 const screenHeight = window.innerHeight
 
+const offsetX = screenWidth / 414
+const offsetY = screenHeight / 736
+
 let over = new Image()
 over.src = 'images/over_bg.png'
 
@@ -34,29 +37,28 @@ export default class GameInfo {
   }
 
   renderGameBegin(ctx) {
- 
-    // ctx.drawImage(over, 0, 0, 810, 852, screenWidth / 2 - 140, screenHeight / 2 - 160, 280, 300)
-    // ctx.rect(screenWidth / 2 - 32, screenHeight / 2 + 82, 132, 40)
-    // ctx.stroke()
 
+    // ctx.drawImage(over, 0, 0,screenWidth, screenHeight)
+  
     ctx.drawImage(begin, 0, 0, screenWidth, screenHeight)
     // 开始游戏按钮test
    
+    // ctx.rect(screenWidth / 2 - offsetX * 37, screenHeight / 2 + offsetY * 120, offsetX * 145, offsetY * 43)
     // 排行榜按钮test
-    // ctx.arc(screenWidth / 2 ,screenHeight - 56, 22, 0, 2 * Math.PI)
+    // ctx.arc(screenWidth / 2 ,screenHeight - 72 * offsetY, offsetX * 28.5, 0, 2 * Math.PI)
     // ctx.stroke()
  
     this.btnBegin = {
-      startX: screenWidth / 2 - 77,
-      startY: screenHeight / 2 + 128,
-      endX  : screenWidth / 2 - 77 + 155,
-      endY  : screenHeight / 2 + 128 + 55
+      startX: screenWidth / 2 - offsetX * 77,
+      startY: screenHeight / 2 + offsetY * 152,
+      endX  : screenWidth / 2 - offsetX * 77 + offsetX * 156,
+      endY  : screenHeight / 2 + offsetY * 152 + offsetY * 55
     }
     this.btnRank = {
-      startX: screenWidth / 2 - 22,
-      startY: screenHeight - 56 - 22,
-      endX  : screenWidth / 2 + 22,
-      endY  : screenHeight - 56 + 22
+      startX: screenWidth / 2 - offsetX * 28.5,
+      startY: screenHeight - 72 * offsetY - offsetX * 28.5,
+      endX  : screenWidth / 2 + offsetX * 28.5,
+      endY  : screenHeight - 72 * offsetY + offsetX * 28.5
     }
   }
 
@@ -168,11 +170,11 @@ export default class GameInfo {
   }
 
   renderGameOver(ctx, score) {
-    ctx.fillStyle = "rgba(0,0,0,0.5)"
-    ctx.fillRect(0,0,screenWidth, screenHeight)
-    ctx.stroke()
-    ctx.drawImage(over, 0, 0, 810, 852, screenWidth / 2 - 140, screenHeight / 2 - 160, 280, 300)
+  
     
+    ctx.drawImage(over, 0, 0,screenWidth, screenHeight)
+
+
     ctx.fillStyle = "#ffffff"
     ctx.font    = "35px 微软雅黑"
 
@@ -182,6 +184,7 @@ export default class GameInfo {
       screenHeight / 2 - 10
     )
 
+    // ctx.arc(screenWidth / 2 - offsetX * 84,screenHeight /2 + offsetY *142, offsetX * 22, 0, 2 * Math.PI)
     // ctx.rect(screenWidth / 2 + 93, screenHeight / 2 - 143, 28, 28)
     // ctx.stroke()
     /**
@@ -189,17 +192,17 @@ export default class GameInfo {
      * 方便简易判断按钮点击
      */
     this.btnToBegin = {
-      startX: screenWidth / 2 - 80 - 22,
-      startY: screenHeight /2 + 102 - 22,
-      endX  : screenWidth / 2 - 80 + 22,
-      endY  : screenHeight /2 + 102 + 22
+      startX: screenWidth / 2 - offsetX * 84 - offsetX * 22,
+      startY: screenHeight /2 + offsetY *142 - offsetX * 22,
+      endX  : screenWidth / 2 - offsetX * 84 + offsetX * 22,
+      endY  : screenHeight /2 + offsetY *142 + offsetX * 22
     }
     // ctx.rect(screenWidth / 2 - 32, screenHeight / 2 + 82, 132, 40)
     this.btnArea = {
-      startX: screenWidth / 2 - 32,
-      startY: screenHeight / 2 + 82,
-      endX  : screenWidth / 2 - 32 + 132,
-      endY  : screenHeight / 2 + 82 + 40
+      startX: screenWidth / 2 - offsetX * 37,
+      startY: screenHeight / 2 + offsetY * 120,
+      endX  : screenWidth / 2 - offsetX * 37 + offsetX * 145,
+      endY  : screenHeight / 2 + offsetY * 120 + offsetY * 43
     }
   }
 }
