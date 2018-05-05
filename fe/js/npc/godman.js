@@ -9,7 +9,7 @@ import {
 
 
 // be-chased被追者相关常量设置
-const BE_CHASED_WIDTH   = 80
+const BE_CHASED_WIDTH   = 80*129/192
 const BE_CHASED_HEIGHT  = 80
 const BE_CHASED_X_SPEED = 1
 
@@ -25,7 +25,7 @@ export default class Godman extends Sprite {
 
     // 玩家默认处于屏幕底部居中位置
     this.x = screenWidth / 2 - this.width / 2
-    this.y = this.height - 70
+    this.y = this.height - 75
 
     // true: left; false: right
     this.direction = true

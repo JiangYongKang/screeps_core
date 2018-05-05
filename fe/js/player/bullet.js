@@ -5,8 +5,8 @@ import {
   BULLET_IMG_SRC
 } from '../config/index'
 
-const BULLET_WIDTH   = 16
-const BULLET_HEIGHT  = 30
+const BULLET_WIDTH   = 20
+const BULLET_HEIGHT  = 18
 
 const __ = {
   speed: Symbol('speed')
