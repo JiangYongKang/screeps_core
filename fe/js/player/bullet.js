@@ -31,13 +31,11 @@ export default class Bullet extends Animation {
 
   // 每一帧更新子弹位置
   update() {
-    if (this.isPlaying) {
-      return
+    if (!this.isPlaying) {
+      this.y -= this[__.speed]
     }
-    this.y -= this[__.speed]
-
     // 超出屏幕外回收自身
-    if ( this.y < -this.height ) {
+    if ( this.y < -this.height) {
       this.remove()
     }
   }
@@ -45,5 +43,5 @@ export default class Bullet extends Animation {
   remove() {
     throw new Error('you should override this function')
   }
-
+  
 }

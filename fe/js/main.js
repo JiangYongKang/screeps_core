@@ -171,8 +171,7 @@ export default class Main {
         }
       }
       // 被追者记分判断
-      if (this.godman.isCollideWith(bullet)) {
-        bullet.visible = false
+      if (!bullet.isPlaying && this.godman.isCollideWith(bullet)) {
         databus.score += INCREMENT_WHEN_HIT_GOD_MAN
         bullet.playAnimation()
       }
@@ -355,7 +354,7 @@ export default class Main {
 
     this.collisionDetection()
 
-    if (databus.frame % 20 === 0) {
+    if (databus.frame % 15 === 0) {
       this.player.shoot()
       this.music.playShoot()
     }
