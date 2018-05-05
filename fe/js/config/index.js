@@ -9,6 +9,8 @@ export const GODMAN_IMG_SRC = 'images/godman.png'
 export const screenWidth    = window.innerWidth
 export const screenHeight   = window.innerHeight
 
+export const BOTTOM_IMAGE_HEIGHT = 170
+
 // 初始界面资源
 export let begin = new Image()
 begin.src = 'images/begin.png'

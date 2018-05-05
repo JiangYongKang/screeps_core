@@ -32,6 +32,9 @@ export default class Badman extends Sprite {
 
     this.bullets = []
     this.movement = new Movement()
+   
+    this.bg     = new Image()
+    this.bg.src = 'images/bottom.png'
   }
 
   /**
@@ -89,7 +92,18 @@ export default class Badman extends Sprite {
     if(screenWidth < (this.x + this.width) || 0 > this.x) { 
         this.direction = !this.direction
     }
+  }
 
+  drawToCanvas(ctx) {
+    const diff = 25
+    ctx.drawImage(
+      this.bg,
+      0,
+      this.y - diff,
+      screenWidth,
+      this.height + diff
+    )
+    super.drawToCanvas(ctx)    
   }
 
    /**

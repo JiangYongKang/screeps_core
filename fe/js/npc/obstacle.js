@@ -1,5 +1,8 @@
 import Animation from '../base/animation'
 import DataBus   from '../databus'
+import {
+  BOTTOM_IMAGE_HEIGHT
+} from '../config/index'
 
 const OBSTACLE_IMG_SRC = 'images/friendzonedCard.png'
 const OBSTACLE_WIDTH   = 60
@@ -49,7 +52,7 @@ export default class Obstacle extends Animation {
   update() {
     this.y += this[__.speed]
     // 对象回收
-    if ( this.y > window.innerHeight + this.height )
+    if ( this.y > window.innerHeight + this.height - BOTTOM_IMAGE_HEIGHT )
       databus.removeObstacle(this)
   }
 }
