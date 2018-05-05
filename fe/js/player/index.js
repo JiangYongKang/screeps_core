@@ -52,6 +52,9 @@ export default class Player extends Sprite {
    * 同时限定飞机的活动范围限制在屏幕中
    */
   setAirPosAcrossFingerPosZ(x, y) {
+    const topEdge = 180
+    const bottomEdge = 100
+    
     let disX = x - this.width / 2
     let disY = y - this.height / 2
 
@@ -61,11 +64,11 @@ export default class Player extends Sprite {
     else if ( disX > screenWidth - this.width )
       disX = screenWidth - this.width
 
-    if ( disY <= 0 )
-      disY = 0
+    if ( disY <= topEdge )
+      disY = topEdge
 
-    else if ( disY > screenHeight - this.height )
-      disY = screenHeight - this.height
+    else if ( disY > screenHeight - this.height - bottomEdge)
+      disY = screenHeight - this.height - bottomEdge
 
     this.x = disX
     this.y = disY
