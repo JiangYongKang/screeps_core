@@ -6,6 +6,7 @@ import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
 import DataBus from './databus'
+import { STATE } from './databus'
 import { 
   MAX_LIFE
 } from './config/index'
@@ -20,36 +21,68 @@ let databus = new DataBus()
 export default class Main {
   constructor() {
 
-    wx.login({
-      success: function(res) {
-        console.log('code = ' + res.code)
-        wx.getUserInfo({
-          success: function(resp) {
-            wx.request({
-              method: 'POST',
-              url: 'https://strikingly-game-jam.herokuapp.com/wechat_users',
-              data: {
-                code: res.code,
-                nickname: resp.userInfo.nickName,
-                picture: resp.userInfo.avatarUrl,
-              },
-              success: function(res) {
-                console.log('登录成功!')
-                console.log(res)
-                GameGlobal.user_info = {
-                  id: res.data.wechat_user.id,
-                  open_id: res.data.wechat_user.open_id
-                }
-              }
-            })
-          }
-        })
-      }
-    })
+    // wx.login({
+    //   success: function(res) {
+    //     console.log('code = ' + res.code)
+    //     wx.getUserInfo({
+    //       success: function(resp) {
+    //         wx.request({
+    //           method: 'POST',
+    //           url: 'https://strikingly-game-jam.herokuapp.com/wechat_users',
+    //           data: {
+    //             code: res.code,
+    //             nickname: resp.userInfo.nickName,
+    //             picture: resp.userInfo.avatarUrl,
+    //           },
+    //           success: function(res) {
+    //             console.log('登录成功!')
+    //             console.log(res)
+    //             GameGlobal.user_info = {
+    //               id: res.data.wechat_user.id,
+    //               open_id: res.data.wechat_user.open_id
+    //             }
+    //           }
+    //         })
+    //       }
+    //     })
+    //   }
+    // })
 
     // 维护当前requestAnimationFrame的id
     this.aniId = 0
-    this.restart()
+    // this.restart()
+    this.runGame()
+  }
+
+  runGame() {
+    databus.reset()
+
+    canvas.removeEventListener(
+      'touchstart',
+      this.touchHandler
+    )
+
+    this.bg = new BackGround(ctx)
+    this.player = new Player(ctx)
+    this.godman = new Godman(ctx)
+    this.badman = new Badman(ctx)
+    this.gameinfo = new GameInfo()
+    this.music = new Music()
+
+    this.bindLoop = this.loop.bind(this)
+    this.hasEventBind = false
+  
+    databus.state = STATE.BEGIN
+
+    // 清除上一局的动画
+    window.cancelAnimationFrame(this.aniId);
+
+    this.aniId = window.requestAnimationFrame(
+      this.bindLoop,
+      canvas
+    )
+
+    life = MAX_LIFE
   }
 
   restart() {
@@ -124,7 +157,7 @@ export default class Main {
         badBullet.visible = false
         life -= 1
         if(life <= 0) {
-          databus.gameOver = true
+          databus.state = STATE.OVER
         }
         break
       }
@@ -138,11 +171,39 @@ export default class Main {
         obstacle.playAnimation()
         life -= 1
         if(life <= 0) {
-          databus.gameOver = true
+          databus.state = STATE.OVER
         }
         break
       }
     }
+  }
+
+  //begin 触摸事件
+  beginTouchEventHandler(e) {
+    e.preventDefault()
+
+    let x = e.touches[0].clientX
+    let y = e.touches[0].clientY
+
+    let area = this.gameinfo.btnArea
+
+    let begin = this.gameinfo.btnBegin
+    if (x >= begin.startX
+      && x <= begin.endX
+      && y >= begin.startY
+      && y <= begin.endY)
+      {
+        databus.state = STATE.RUN
+        this.restart()
+      }
+    let rank = this.gameinfo.btnRank
+    if (x >= rank.startX
+      && x <= rank.endX
+      && y >= rank.startY
+      && y <= rank.endY)
+      {
+        console.log('rank')
+      }
   }
 
   // 游戏结束后的触摸事件处理逻辑
@@ -188,8 +249,18 @@ export default class Main {
     this.gameinfo.renderGameScore(ctx, databus.score)
     this.gameinfo.renderPlayerLife(ctx, life)
 
+    // 游戏初始化
+    if(databus.state === STATE.BEGIN) {
+      this.gameinfo.renderGameBegin(ctx)
+      if (!this.hasEventBind) {
+        this.hasEventBind = true
+        this.touchHandler = this.beginTouchEventHandler.bind(this)
+        canvas.addEventListener('touchstart', this.touchHandler)
+      }
+    }
+
     // 游戏结束停止帧循环
-    if (databus.gameOver) {
+    if (databus.state === STATE.OVER) {
       this.gameinfo.renderGameOver(ctx, databus.score)
 
       if (!this.hasEventBind) {
@@ -202,7 +273,7 @@ export default class Main {
 
   // 游戏逻辑更新主函数
   update() {
-    if (databus.gameOver)
+    if (databus.state !== STATE.RUN)
       return;
 
     this.bg.update()

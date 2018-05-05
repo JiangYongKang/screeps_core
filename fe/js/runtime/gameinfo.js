@@ -1,9 +1,12 @@
+
 const screenWidth  = window.innerWidth
 const screenHeight = window.innerHeight
 
 let atlas = new Image()
 atlas.src = 'images/Common.png'
 
+let begin = new Image()
+begin.src = 'images/begin.png'
 export default class GameInfo {
   renderGameScore(ctx, score) {
     ctx.fillStyle = "#ffffff"
@@ -25,6 +28,34 @@ export default class GameInfo {
       10,
       50
     )
+  }
+
+  renderGameBegin(ctx) {
+    ctx.drawImage(begin, 0, 0, screenWidth, screenHeight)
+    // 开始游戏按钮test
+    // ctx.rect(screenWidth / 2 - 60,screenHeight / 2 + 97,120,45)
+    // ctx.stroke()
+
+    // 排行榜按钮test
+    // ctx.arc(screenWidth / 2 - 53,screenHeight - 52, 22, 0, 2 * Math.PI)
+    // ctx.stroke()
+ 
+    this.btnBegin = {
+      startX: screenWidth / 2 - 60,
+      startY: screenHeight / 2 + 97,
+      endX  : screenWidth / 2 - 60 + 120,
+      endY  : screenHeight / 2 + 97 + 45
+    }
+    this.btnRank = {
+      startX: screenWidth / 2 - 53 - 22,
+      startY: screenHeight - 52 - 22,
+      endX  : screenWidth / 2 - 53 + 22,
+      endY  : screenHeight - 52 + 22
+    }
+  }
+
+  renderRank() {
+    ctx.drawImage(begin, 0, 0, screenWidth, screenHeight)
   }
 
   renderGameOver(ctx, score) {

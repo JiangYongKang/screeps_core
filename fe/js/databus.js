@@ -1,5 +1,12 @@
 import Pool from './base/pool'
 
+export const STATE = {
+  BEGIN: 0,
+  RUN: 1,
+  OVER: 2,
+  RANK: 3
+}
+
 let instance
 
 /**
@@ -13,7 +20,8 @@ export default class DataBus {
     instance = this
 
     this.pool = new Pool()
-
+    this.state = STATE.BEGIN
+    this.isBegin = true
     this.reset()
   }
 
