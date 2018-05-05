@@ -138,7 +138,7 @@ export default class Main {
     this.badman.y = screenHeight + 80
     intervalID = setInterval(() => {
       if (this.badman.y > screenHeight - 70) {
-        this.badman.y -= 1
+        this.badman.y -= 1.5
       }
     }, 1000/60);
   }
@@ -371,7 +371,7 @@ export default class Main {
       this.badman.shoot()
     }
 
-    if (databus.score > 10) {
+    if (databus.score > 9) {
       this.setupBadman()
     }
   }
