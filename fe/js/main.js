@@ -87,7 +87,7 @@ export default class Main {
 
   restart() {
     databus.reset()
-
+    databus.state = STATE.RUN
     canvas.removeEventListener(
       'touchstart',
       this.touchHandler
@@ -185,7 +185,6 @@ export default class Main {
     let x = e.touches[0].clientX
     let y = e.touches[0].clientY
 
-    let area = this.gameinfo.btnArea
 
     let begin = this.gameinfo.btnBegin
     if (x >= begin.startX
@@ -218,8 +217,10 @@ export default class Main {
     if (x >= area.startX
       && x <= area.endX
       && y >= area.startY
-      && y <= area.endY)
-      this.restart()
+      && y <= area.endY){
+        console.log(213)
+        this.restart()
+      }
   }
 
   /**
