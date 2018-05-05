@@ -74,9 +74,11 @@ export default class DataBus {
 
   removeBadBullets(bullet) {
     let temp = this.badBullets.shift()
+    while(temp && temp !== bullet) {
+      temp = this.badBullets.shift()
+    }
 
     temp.visible = false
-
     this.pool.recover('badBullet', bullet)
   }
 

@@ -181,7 +181,7 @@ export default class Main {
       let badBullet = databus.badBullets[i]
       if (this.player.isCollideWith(badBullet))  {
         // 玩家被击中的效果
-        badBullet.visible = false
+        badBullet.playAnimation()
         life -= 1
         if(life <= 0) {
           databus.state = STATE.OVER
