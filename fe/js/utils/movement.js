@@ -7,6 +7,7 @@ export default class Movement {
     this.canMove = false
     this.maxRemainingTime = maxRemainingTime
     this.maxMovingTime = maxMovingTime
+    this.direction = true
     
     this.move = this.move.bind(this)
     this.stop = this.stop.bind(this)
@@ -20,13 +21,19 @@ export default class Movement {
 
   stop() {
     this.canMove = false
+    this.direction = this.randomDirection()
     const randomRemainingTime = Math.floor(Math.random() * this.maxRemainingTime)
     setTimeout(this.move, randomRemainingTime)
   }
 
   move() {
     this.canMove = true
+    this.direction = this.randomDirection()
     const randomMoveTime = Math.floor(Math.random() * this.maxMovingTime)
     setTimeout(this.stop, randomMoveTime)
+  }
+
+  randomDirection() {
+    return Math.floor(Math.random() * 10) % 2 == 0
   }
 }

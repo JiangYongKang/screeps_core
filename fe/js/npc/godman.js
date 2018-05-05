@@ -75,19 +75,19 @@ export default class Godman extends Sprite {
   // 更新
   update() {
     if(!this.movement.canMove) {
+      this.direction = this.movement.direction
       return
     }
-
-    if(this.direction) {
-        this.x -= BE_CHASED_X_SPEED
-    } else {
-        this.x += BE_CHASED_X_SPEED
-    }
-
+    
     if(screenWidth < (this.x + this.width) || 0 > this.x) { 
         this.direction = !this.direction
     }
 
+    if(this.direction) {
+      this.x -= BE_CHASED_X_SPEED
+    } else {
+      this.x += BE_CHASED_X_SPEED
+    }
   }
 
 }
