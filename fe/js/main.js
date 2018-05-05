@@ -8,12 +8,17 @@ import Music from './runtime/music'
 import DataBus from './databus'
 import { STATE } from './databus'
 import { 
-  MAX_LIFE
+  MAX_LIFE,
+  screenHeight,
+  INCREMENT_WHEN_HIT_FRIEND_ZONED_CARD,
+  INCREMENT_WHEN_HIT_GOD_MAN,
 } from './config/index'
 
 let life = MAX_LIFE
 let ctx = canvas.getContext('2d')
 let databus = new DataBus()
+let intervalID = null
+let appearredBadman = false
 
 /**
  * 游戏主函数
@@ -65,7 +70,6 @@ export default class Main {
     this.bg = new BackGround(ctx)
     this.player = new Player(ctx)
     this.godman = new Godman(ctx)
-    this.badman = new Badman(ctx)
     this.gameinfo = new GameInfo()
     this.music = new Music()
 
@@ -96,7 +100,6 @@ export default class Main {
     this.bg = new BackGround(ctx)
     this.player = new Player(ctx)
     this.godman = new Godman(ctx)
-    this.badman = new Badman(ctx)
     this.gameinfo = new GameInfo()
     this.music = new Music()
 
@@ -112,6 +115,27 @@ export default class Main {
     )
 
     life = MAX_LIFE
+    
+    clearInterval(intervalID)
+    appearredBadman = false
+  }
+
+  setupBadman() {
+    if (appearredBadman) {
+      return
+    }
+    appearredBadman = true
+    this.badman = new Badman(ctx)    
+    this.appearBadman()
+  }
+
+  appearBadman() {
+    this.badman.y = screenHeight + 80
+    intervalID = setInterval(() => {
+      if (this.badman.y > screenHeight - 70) {
+        this.badman.y -= 1
+      }
+    }, 1000/60);
   }
 
   /**
@@ -139,14 +163,15 @@ export default class Main {
           that.music.playExplosion()
 
           bullet.visible = false
-
+          databus.score += INCREMENT_WHEN_HIT_FRIEND_ZONED_CARD
           break
         }
       }
       // 被追者记分判断
       if (this.godman.isCollideWith(bullet)) {
         bullet.visible = false
-        databus.score += 1
+        databus.score += INCREMENT_WHEN_HIT_GOD_MAN
+        bullet.playAnimation()
       }
     })
 
@@ -270,7 +295,9 @@ export default class Main {
 
     this.player.drawToCanvas(ctx)
     this.godman.drawToCanvas(ctx)
-    this.badman.drawToCanvas(ctx)
+    if (this.badman) {
+      this.badman.drawToCanvas(ctx)
+    }
     databus.animations.forEach((ani) => {
       if (ani.isPlaying) {
         ani.aniRender(ctx)
@@ -312,7 +339,9 @@ export default class Main {
 
     this.bg.update()
     this.godman.update()
-    this.badman.update()
+    if (this.badman) {
+      this.badman.update()
+    }
     databus.bullets()
       .concat(databus.obstacles)
       .forEach((item) => {
@@ -329,8 +358,12 @@ export default class Main {
     }
 
     // TODO: FIXME
-    if (databus.frame % 100 === 0) {
+    if (databus.frame % 100 === 0 && this.badman) {
       this.badman.shoot()
+    }
+
+    if (databus.score > 10) {
+      this.setupBadman()
     }
   }
 

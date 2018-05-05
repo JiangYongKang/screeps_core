@@ -1,4 +1,5 @@
 import Sprite   from '../base/sprite'
+import Animation from '../base/animation'
 import DataBus  from '../databus'
 
 import { 
@@ -6,7 +7,7 @@ import {
 } from '../config/index'
 
 const BULLET_WIDTH   = 20
-const BULLET_HEIGHT  = 18
+const BULLET_HEIGHT  = 20
 
 const __ = {
   speed: Symbol('speed')
@@ -14,9 +15,9 @@ const __ = {
 
 let databus = new DataBus()
 
-export default class Bullet extends Sprite {
-  constructor(skins) {
-    super(skins, BULLET_WIDTH, BULLET_HEIGHT)
+export default class Bullet extends Animation {
+  constructor(skins, width = BULLET_WIDTH, height = BULLET_HEIGHT) {
+    super(skins, width, height)
   }
 
   init(x, y, speed) {
@@ -30,6 +31,9 @@ export default class Bullet extends Sprite {
 
   // 每一帧更新子弹位置
   update() {
+    if (this.isPlaying) {
+      return
+    }
     this.y -= this[__.speed]
 
     // 超出屏幕外回收自身

@@ -4,7 +4,7 @@ const screenWidth  = window.innerWidth
 // TODO: FIXME
 const screenHeight = window.innerHeight + 80
 
-const BG_IMG_SRC   = 'images/bg-temp.png'
+const BG_IMG_SRC   = 'images/bg.png'
 const BG_WIDTH     = 1125
 const BG_HEIGHT    = 2204
 

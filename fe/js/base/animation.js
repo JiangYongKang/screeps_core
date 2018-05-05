@@ -35,6 +35,9 @@ export default class Animation extends Sprite {
     // 帧图片集合
     this.imgList = []
 
+    // 帧图片 scale
+    this.animationScale = 2
+
     /**
      * 推入到全局动画池里面
      * 便于全局绘图的时候遍历和绘制当前动画帧
@@ -63,8 +66,8 @@ export default class Animation extends Sprite {
       this.imgList[this.index],
       this.x,
       this.y,
-      this.width  * 1.2,
-      this.height * 1.2
+      this.width  * this.animationScale,
+      this.height * this.animationScale,
     )
   }
 
