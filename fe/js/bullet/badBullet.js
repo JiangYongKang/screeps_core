@@ -26,6 +26,18 @@ export default class BadBullet extends Bullet {
     this.initFrames(frames)
   }
 
+  playAnimation() {
+    super.playAnimation()
+    wx.vibrateShort({
+      // fail: (error) => {
+      //   console.error(error)
+      // },
+      // success: () => {
+      //   console.log('success')
+      // }
+    })
+  }
+
   remove() {
     databus.removeBadBullets(this)
   }
