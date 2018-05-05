@@ -19,6 +19,8 @@ let ctx = canvas.getContext('2d')
 let databus = new DataBus()
 let intervalID = null
 let appearredBadman = false
+// TODO: FIXME
+let badmanShootSpeed = 100
 
 /**
  * 游戏主函数
@@ -359,13 +361,20 @@ export default class Main {
     }
 
     // TODO: FIXME
-    if (databus.frame % 100 === 0 && this.badman) {
+    if (databus.frame % badmanShootSpeed === 0 && this.badman) {
       this.badman.shoot()
     }
 
     if (databus.score > 10) {
       this.setupBadman()
     }
+
+    this.updateBadmanShootSpeed()
+  }
+
+  updateBadmanShootSpeed() {
+    const maxBadmanShootSpeed = 30
+    badmanShootSpeed = Math.max(maxBadmanShootSpeed, 100 - databus.score * 2)
   }
 
   // 实现游戏帧循环
