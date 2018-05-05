@@ -34,6 +34,7 @@ export default class GameInfo {
   }
 
   renderGameBegin(ctx) {
+ 
     // ctx.drawImage(over, 0, 0, 810, 852, screenWidth / 2 - 140, screenHeight / 2 - 160, 280, 300)
     // ctx.rect(screenWidth / 2 - 32, screenHeight / 2 + 82, 132, 40)
     // ctx.stroke()
@@ -41,7 +42,6 @@ export default class GameInfo {
     ctx.drawImage(begin, 0, 0, screenWidth, screenHeight)
     // 开始游戏按钮test
    
-
     // 排行榜按钮test
     // ctx.arc(screenWidth / 2 ,screenHeight - 56, 22, 0, 2 * Math.PI)
     // ctx.stroke()
@@ -168,6 +168,9 @@ export default class GameInfo {
   }
 
   renderGameOver(ctx, score) {
+    ctx.fillStyle = "rgba(0,0,0,0.5)"
+    ctx.fillRect(0,0,screenWidth, screenHeight)
+    ctx.stroke()
     ctx.drawImage(over, 0, 0, 810, 852, screenWidth / 2 - 140, screenHeight / 2 - 160, 280, 300)
     
     ctx.fillStyle = "#ffffff"

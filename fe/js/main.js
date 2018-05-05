@@ -26,32 +26,32 @@ let appearredBadman = false
 export default class Main {
   constructor() {
 
-    // wx.login({
-    //   success: function(res) {
-    //     console.log('code = ' + res.code)
-    //     wx.getUserInfo({
-    //       success: function(resp) {
-    //         wx.request({
-    //           method: 'POST',
-    //           url: 'https://strikingly-game-jam.herokuapp.com/wechat_users',
-    //           data: {
-    //             code: res.code,
-    //             nickname: resp.userInfo.nickName,
-    //             picture: resp.userInfo.avatarUrl,
-    //           },
-    //           success: function(res) {
-    //             console.log('登录成功!')
-    //             console.log(res)
-    //             GameGlobal.user_info = {
-    //               id: res.data.wechat_user.id,
-    //               open_id: res.data.wechat_user.open_id
-    //             }
-    //           }
-    //         })
-    //       }
-    //     })
-    //   }
-    // })
+    wx.login({
+      success: function(res) {
+        // console.log('code = ' + res.code)
+        wx.getUserInfo({
+          success: function(resp) {
+            wx.request({
+              method: 'POST',
+              url: 'https://strikingly-game-jam.herokuapp.com/wechat_users',
+              data: {
+                code: res.code,
+                nickname: resp.userInfo.nickName,
+                picture: resp.userInfo.avatarUrl,
+              },
+              success: function(res) {
+                // console.log('登录成功!')
+                // console.log(res)
+                GameGlobal.user_info = {
+                  id: res.data.wechat_user.id,
+                  open_id: res.data.wechat_user.open_id
+                }
+              }
+            })
+          }
+        })
+      }
+    })
 
     // 维护当前requestAnimationFrame的id
     this.aniId = 0
@@ -229,7 +229,6 @@ export default class Main {
       {
         databus.state = STATE.RANK
         this.gameinfo.renderRank(ctx)
-        console.log('rank')
       }
   }
 
@@ -266,6 +265,7 @@ export default class Main {
       && y <= area.endY){
     
         this.restart()
+        return
       }
 
     let toBegin = this.gameinfo.btnToBegin
