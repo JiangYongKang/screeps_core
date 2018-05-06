@@ -34,9 +34,10 @@ let databus = new DataBus()
 export default class Main {
   constructor() {
 
+    // TODO: 请不要修改 login 的代码，包括 console.log
     wx.login({
       success: function(res) {
-        // console.log('code = ' + res.code)
+        console.log('code = ' + res.code)
         console.log('code = ' + res.code)
         wx.getUserInfo({
           success: function(resp) {
@@ -49,8 +50,6 @@ export default class Main {
                 picture: resp.userInfo.avatarUrl,
               },
               success: function(res) {
-                // console.log('登录成功!')
-                // console.log(res)
                 console.log('登录成功!')
                 console.log(res)
                 GameGlobal.user_info = {
@@ -295,7 +294,7 @@ export default class Main {
         && x <= share.endX
         && y >= share.startY
         && y <= share.endY){
-      
+
           wx.shareAppMessage()
           return
         }
@@ -326,12 +325,12 @@ export default class Main {
     if(Math.floor(databus.score / GLOW_SHOW_SCORE) > glowShowCount || glowShowTime > 0) {
       if(Math.floor(databus.score / GLOW_SHOW_SCORE) > glowShowCount) {
         glowShowCount++
-        glowShowTime = 2000 
+        glowShowTime = 2000
       }
-      glowShowTime -= 50 
+      glowShowTime -= 50
       this.glow.drawToCanvas(ctx)
     }
-  
+
     if (this.badman) {
       this.badman.drawToCanvas(ctx)
     }
