@@ -9,7 +9,7 @@ import DataBus from './databus'
 import Lifebar from './element/lifebar'
 import { STATE } from './databus'
 import { calcShootingIntervalFrames } from './utils/difficulty'
-import { 
+import {
   MAX_LIFE,
   screenHeight,
   INCREMENT_WHEN_HIT_FRIEND_ZONED_CARD,
@@ -28,28 +28,28 @@ export default class Main {
 
     wx.login({
       success: function(res) {
-        // console.log('code = ' + res.code)
-        // wx.getUserInfo({
-        //   success: function(resp) {
-        //     wx.request({
-        //       method: 'POST',
-        //       url: 'https://strikingly-game-jam.herokuapp.com/wechat_users',
-        //       data: {
-        //         code: res.code,
-        //         nickname: resp.userInfo.nickName,
-        //         picture: resp.userInfo.avatarUrl,
-        //       },
-        //       success: function(res) {
-        //         // console.log('登录成功!')
-        //         // console.log(res)
-        //         GameGlobal.user_info = {
-        //           id: res.data.wechat_user.id,
-        //           open_id: res.data.wechat_user.open_id
-        //         }
-        //       }
-        //     })
-        //   }
-        // })
+        console.log('code = ' + res.code)
+        wx.getUserInfo({
+          success: function(resp) {
+            wx.request({
+              method: 'POST',
+              url: 'https://strikingly-game-jam.herokuapp.com/wechat_users',
+              data: {
+                code: res.code,
+                nickname: resp.userInfo.nickName,
+                picture: resp.userInfo.avatarUrl,
+              },
+              success: function(res) {
+                console.log('登录成功!')
+                console.log(res)
+                GameGlobal.user_info = {
+                  id: res.data.wechat_user.id,
+                  open_id: res.data.wechat_user.open_id
+                }
+              }
+            })
+          }
+        })
       }
     })
 
@@ -74,7 +74,7 @@ export default class Main {
 
     this.bindLoop = this.loop.bind(this)
     this.hasEventBind = false
-  
+
     databus.state = STATE.BEGIN
 
     // 清除上一局的动画
@@ -117,19 +117,19 @@ export default class Main {
 
     this.life = MAX_LIFE
     this.lifebar = new Lifebar(ctx, this.life)
-    
+
     this.clearBadman()
     this.executeOnceWrapper.reset()
   }
 
   setupBadman() {
-    this.badman = new Badman(ctx) 
+    this.badman = new Badman(ctx)
     this.badman.y = screenHeight + 80
     this.badminAppearIntervalID = setInterval(() => {
       if (this.badman.y > screenHeight - 70) {
         this.badman.y -= 1.5
       }
-    }, 1000/60);   
+    }, 1000/60);
   }
 
   clearBadman() {
@@ -261,7 +261,7 @@ export default class Main {
       && x <= area.endX
       && y >= area.startY
       && y <= area.endY){
-    
+
         this.restart()
         return
       }
@@ -271,7 +271,7 @@ export default class Main {
       && x <= toBegin.endX
       && y >= toBegin.startY
       && y <= toBegin.endY){
-    
+
         databus.state = STATE.BEGIN
       }
   }
@@ -314,7 +314,7 @@ export default class Main {
     if(databus.state === STATE.BEGIN) {
       this.clearTouchEvent()
       this.gameinfo.renderGameBegin(ctx)
-  
+
       if (!this.hasEventBind) {
         this.hasEventBind = true
         this.touchHandler = this.beginTouchEventHandler
@@ -384,7 +384,7 @@ export default class Main {
       canvas
     )
   }
-  
+
   //清除touch事件
   clearTouchEvent() {
     canvas.removeEventListener(
