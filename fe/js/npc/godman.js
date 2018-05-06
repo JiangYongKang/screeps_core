@@ -32,46 +32,6 @@ export default class Godman extends Sprite {
     this.movement = new Movement()
   }
 
-  /**
-   * 当手指触摸屏幕的时候
-   * 判断手指是否在飞机上
-   * @param {Number} x: 手指的X轴坐标
-   * @param {Number} y: 手指的Y轴坐标
-   * @return {Boolean}: 用于标识手指是否在飞机上的布尔值
-   */
-  checkIsFingerOnAir(x, y) {
-    const deviation = 30
-
-    return !!(   x >= this.x - deviation
-              && y >= this.y - deviation
-              && x <= this.x + this.width + deviation
-              && y <= this.y + this.height + deviation  )
-  }
-
-  /**
-   * 根据手指的位置设置飞机的位置
-   * 保证手指处于飞机中间
-   * 同时限定飞机的活动范围限制在屏幕中
-   */
-  setAirPosAcrossFingerPosZ(x, y) {
-    let disX = x - this.width / 2
-    let disY = y - this.height / 2
-
-    if ( disX < 0 )
-      disX = 0
-
-    else if ( disX > screenWidth - this.width )
-      disX = screenWidth - this.width
-
-    if ( disY <= 0 )
-      disY = 0
-
-    else if ( disY > screenHeight - this.height )
-      disY = screenHeight - this.height
-
-    this.x = disX
-    this.y = disY
-  }
   // 更新
   update() {
     if(!this.movement.canMove) {
@@ -88,6 +48,16 @@ export default class Godman extends Sprite {
     } else {
       this.x += BE_CHASED_X_SPEED
     }
+
+    const grades = ['basic', 'normal', 'medium', 'high']
+    const min = Math.min(3, Math.floor(databus.score / 50))
+    const grade = grades[min]
+    this.updateGrade(grade)
+  }
+
+  updateGrade(grade) {
+    const img = 'images/grade/man-' + grade + '.png'
+    this.img.src = img
   }
 
 }
