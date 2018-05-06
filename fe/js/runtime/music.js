@@ -20,9 +20,6 @@ export default class Music {
     this.boomAudio     = new Audio()
     this.boomAudio.src = 'audio/boom.mp3'
 
-    this.atkGodman     = new Audio()
-    this.atkGodman.src = 'audio/atk_godman.mp3'
-
     this.playBgm()
   }
 
@@ -38,10 +35,5 @@ export default class Music {
   playExplosion() {
     this.boomAudio.currentTime = 0
     this.boomAudio.play()
-  }
-
-  playAtkGodman(){
-    this.atkGodman.currentTime = 0
-    this.atkGodman.play()
   }
 }

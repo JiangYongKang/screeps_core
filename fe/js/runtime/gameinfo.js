@@ -190,11 +190,7 @@ export default class GameInfo {
     ctx.stroke()
   
     const test = new Image()
-    let num = Math.floor(score / 5)
-
-    if(num > 3){
-      num = 3
-    }
+    const num = Math.floor(score / 5)
     test.src = overText[num]
     let height1 = 46
     if(num === 1){

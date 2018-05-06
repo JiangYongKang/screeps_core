@@ -183,8 +183,7 @@ export default class Main {
       // 被追者记分判断
       if (!bullet.isPlaying && this.godman.isCollideWith(bullet)) {
         databus.score += INCREMENT_WHEN_HIT_GOD_MAN
-        // bullet.playAnimation()
-        that.music.playAtkGodman()
+        bullet.playAnimation()
       }
     })
 
