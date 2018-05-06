@@ -13,6 +13,8 @@ begin.src = 'images/begin.png'
 
 let rank = new Image()
 rank.src = 'images/rank_bg.png'
+
+let rankData, lock, overBackData
 export default class GameInfo {
   renderGameScore(ctx, score) {
     ctx.fillStyle = "#ffffff"
@@ -38,16 +40,12 @@ export default class GameInfo {
 
   renderGameBegin(ctx) {
 
-    // ctx.drawImage(over, 0, 0,screenWidth, screenHeight)
-  
-    ctx.drawImage(begin, 0, 0, screenWidth, screenHeight)
-    // 开始游戏按钮test
-   
-    // ctx.rect(screenWidth / 2 - offsetX * 37, screenHeight / 2 + offsetY * 120, offsetX * 145, offsetY * 43)
-    // 排行榜按钮test
-    // ctx.arc(screenWidth / 2 ,screenHeight - 72 * offsetY, offsetX * 28.5, 0, 2 * Math.PI)
+    // ctx.drawImage(over, 0, 0, screenWidth, screenHeight)
+    // ctx.arc(screenWidth / 2 - offsetX * 81, screenHeight /2 + offsetY *210, offsetX * 22, 0 ,2 * Math.PI)
+    // ctx.rect(screenWidth / 2 - 9, screenHeight / 2 - 24, 20, 25)
     // ctx.stroke()
- 
+    ctx.drawImage(begin, 0, 0, screenWidth, screenHeight)
+  
     this.btnBegin = {
       startX: screenWidth / 2 - offsetX * 77,
       startY: screenHeight / 2 + offsetY * 152,
@@ -77,62 +75,8 @@ export default class GameInfo {
       endY  : screenHeight / 2 - 143 + 28
     }
 
-    // wx.request({
-    //   method: 'GET',
-    //   url: 'https://strikingly-game-jam.herokuapp.com/ranking',
-    //   success: function(res) {
-    //     console.log(res)
-    //   }
-    // })
-    const data = [
-      {
-          "id": 1,
-          "open_id": "xxx",
-          "nickname": "李王强",
-          "picture": "https://wx.qlogo.cn/mmhead/PiajxSqBRaEKbKlCS9WibkSIaa4cxvUO9p85SQGLibDXztArnSn6HwXSw/64",
-          "max_score": 100,
-          "created_at": "2018-05-04T16:10:53.323Z",
-          "updated_at": "2018-05-04T16:13:44.400Z"
-      },
-      {
-          "id": 2,
-          "open_id": "zzz",
-          "nickname": "李王强",
-          "picture": "https://wx.qlogo.cn/mmhead/PiajxSqBRaEKbKlCS9WibkSIaa4cxvUO9p85SQGLibDXztArnSn6HwXSw/64",
-          "max_score": 0,
-          "created_at": "2018-05-04T16:13:04.619Z",
-          "updated_at": "2018-05-04T16:13:04.619Z"
-      },
-      {
-          "id": 2,
-          "open_id": "zzz",
-          "nickname": "李王强",
-          "picture": "https://wx.qlogo.cn/mmhead/PiajxSqBRaEKbKlCS9WibkSIaa4cxvUO9p85SQGLibDXztArnSn6HwXSw/64",
-          "max_score": 0,
-          "created_at": "2018-05-04T16:13:04.619Z",
-          "updated_at": "2018-05-04T16:13:04.619Z"
-      },
-      {
-          "id": 2,
-          "open_id": "zzz",
-          "nickname": "李王强",
-          "picture": "https://wx.qlogo.cn/mmhead/PiajxSqBRaEKbKlCS9WibkSIaa4cxvUO9p85SQGLibDXztArnSn6HwXSw/64",
-          "max_score": 0,
-          "created_at": "2018-05-04T16:13:04.619Z",
-          "updated_at": "2018-05-04T16:13:04.619Z"
-      },
-      {
-          "id": 2,
-          "open_id": "zzz",
-          "nickname": "李王强",
-          "picture": "https://wx.qlogo.cn/mmhead/PiajxSqBRaEKbKlCS9WibkSIaa4cxvUO9p85SQGLibDXztArnSn6HwXSw/64",
-          "max_score": 0,
-          "created_at": "2018-05-04T16:13:04.619Z",
-          "updated_at": "2018-05-04T16:13:04.619Z"
-      }
-    ]
     ctx.fillStyle = "#ffffff"
-    ctx.font    = "28px 微软雅黑"
+    ctx.font    = "24px 微软雅黑"
 
     ctx.fillText(
       '排名',
@@ -140,13 +84,13 @@ export default class GameInfo {
       screenHeight / 2 - 120
     )
 
-    let offsetY = 30
+    let offsetY = 25
     ctx.fillStyle = "#ffffff"
     ctx.font    = "18px 微软雅黑"
     const renderText= (index, obj) => {
       const [x, y] = [screenWidth / 2 - 120, screenHeight / 2 - 80 + index * offsetY]
       ctx.fillText(
-        `${index}.`,
+        `${index + 1}.`,
         x,
         y
       )
@@ -163,16 +107,40 @@ export default class GameInfo {
         y
       )
     }
-    for(let index = 0; index < data.length; index++) {
-      renderText(index, data[index])
+    if(!rankData && !lock) {
+      lock = true
+      wx.request({
+        method: 'GET',
+        url: 'https://strikingly-game-jam.herokuapp.com/ranking',
+        success: function(res) {
+          lock = false
+          console.log(res)
+          rankData = res
+          if(res.statusCode === 200) {
+            rankData = res.data.ranking
+            for(let index = 0; index < rankData.length; index++) {
+              renderText(index, rankData[index])
+            
+            }
+          }
+         
+        }
+      })
+    } else if(rankData) {
+      for(let index = 0; index < rankData.length; index++) {
+        renderText(index, rankData[index])
+      
+      }
     }
     
   }
 
   renderGameOver(ctx, score) {
   
+  
     
-    ctx.drawImage(over, 0, 0,screenWidth, screenHeight)
+    
+    ctx.drawImage(over, 0, 0, screenWidth, screenHeight)
 
 
     ctx.fillStyle = "#ffffff"
@@ -180,29 +148,52 @@ export default class GameInfo {
 
     ctx.fillText(
       score,
-      screenWidth / 2 - 20,
-      screenHeight / 2 - 10
+      screenWidth / 2 - 12,
+      screenHeight / 2 - 60
     )
-
-    // ctx.arc(screenWidth / 2 - offsetX * 84,screenHeight /2 + offsetY *142, offsetX * 22, 0, 2 * Math.PI)
-    // ctx.rect(screenWidth / 2 + 93, screenHeight / 2 - 143, 28, 28)
-    // ctx.stroke()
     /**
      * 重新开始按钮区域
      * 方便简易判断按钮点击
      */
     this.btnToBegin = {
-      startX: screenWidth / 2 - offsetX * 84 - offsetX * 22,
-      startY: screenHeight /2 + offsetY *142 - offsetX * 22,
-      endX  : screenWidth / 2 - offsetX * 84 + offsetX * 22,
-      endY  : screenHeight /2 + offsetY *142 + offsetX * 22
+      startX: screenWidth / 2 - offsetX * 81 - offsetX * 22,
+      startY: screenHeight /2 + offsetY *210 - offsetX * 22,
+      endX  : screenWidth / 2 - offsetX * 81 + offsetX * 22,
+      endY  : screenHeight /2 + offsetY *210 + offsetX * 22
     }
-    // ctx.rect(screenWidth / 2 - 32, screenHeight / 2 + 82, 132, 40)
     this.btnArea = {
-      startX: screenWidth / 2 - offsetX * 37,
-      startY: screenHeight / 2 + offsetY * 120,
-      endX  : screenWidth / 2 - offsetX * 37 + offsetX * 145,
-      endY  : screenHeight / 2 + offsetY * 120 + offsetY * 43
+      startX: screenWidth / 2 - offsetX * 33,
+      startY: screenHeight / 2 + offsetY * 188,
+      endX  : screenWidth / 2 - offsetX * 33 + offsetX * 145,
+      endY  : screenHeight / 2 + offsetY * 188 + offsetY * 43
+    }
+    this.btnShare = {
+      startX: screenWidth / 2 - offsetX * 9,
+      startY: screenHeight / 2 - offsetY * 24,
+      endX  : screenWidth / 2 - offsetX * 9 + offsetX * 20,
+      endY  : screenHeight / 2 - offsetY * 24 + offsetY * 25
+    }
+
+    try{
+      if(!overBackData && !lock) {
+        lock = true
+        wx.request({
+          method: 'GET',
+          url: `https://strikingly-game-jam.herokuapp.com/ranking/${GameGlobal.user_info.id}?max_score=${score}`,
+          success: function(res) {
+            lock = false
+         
+            overBackData = res
+            if(res.statusCode === 200) {
+              console.log(res)
+              // overBackData = res.data.ranking
+            }
+           
+          }
+        })
+      }
+    } catch(e) {
+      
     }
   }
 }

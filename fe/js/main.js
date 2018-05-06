@@ -2,6 +2,9 @@ import Player from './player/index'
 import Obstacle from './npc/obstacle'
 import Godman from './npc/godman'
 import Badman from './npc/badman'
+
+import Glow from './npc/glow'
+
 import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
@@ -13,6 +16,10 @@ import {
   INCREMENT_WHEN_HIT_FRIEND_ZONED_CARD,
   INCREMENT_WHEN_HIT_GOD_MAN,
 } from './config/index'
+
+const GLOW_SHOW_SCORE = 5
+let glowShowCount = 0
+let glowShowTime = 2000
 
 let life = MAX_LIFE
 let ctx = canvas.getContext('2d')
@@ -31,27 +38,27 @@ export default class Main {
     wx.login({
       success: function(res) {
         // console.log('code = ' + res.code)
-        // wx.getUserInfo({
-        //   success: function(resp) {
-        //     wx.request({
-        //       method: 'POST',
-        //       url: 'https://strikingly-game-jam.herokuapp.com/wechat_users',
-        //       data: {
-        //         code: res.code,
-        //         nickname: resp.userInfo.nickName,
-        //         picture: resp.userInfo.avatarUrl,
-        //       },
-        //       success: function(res) {
-        //         // console.log('登录成功!')
-        //         // console.log(res)
-        //         GameGlobal.user_info = {
-        //           id: res.data.wechat_user.id,
-        //           open_id: res.data.wechat_user.open_id
-        //         }
-        //       }
-        //     })
-        //   }
-        // })
+        wx.getUserInfo({
+          success: function(resp) {
+            wx.request({
+              method: 'POST',
+              url: 'https://strikingly-game-jam.herokuapp.com/wechat_users',
+              data: {
+                code: res.code,
+                nickname: resp.userInfo.nickName,
+                picture: resp.userInfo.avatarUrl,
+              },
+              success: function(res) {
+                // console.log('登录成功!')
+                // console.log(res)
+                GameGlobal.user_info = {
+                  id: res.data.wechat_user.id,
+                  open_id: res.data.wechat_user.open_id
+                }
+              }
+            })
+          }
+        })
       }
     })
 
@@ -72,6 +79,7 @@ export default class Main {
     this.bg = new BackGround(ctx)
     this.player = new Player(ctx)
     this.godman = new Godman(ctx)
+    this.glow = new Glow(this.godman)
     this.gameinfo = new GameInfo()
     this.music = new Music()
 
@@ -92,6 +100,8 @@ export default class Main {
   }
 
   restart() {
+    glowShowCount = 0
+    glowShowTime = 0
     databus.reset()
     databus.state = STATE.RUN
     canvas.removeEventListener(
@@ -102,6 +112,7 @@ export default class Main {
     this.bg = new BackGround(ctx)
     this.player = new Player(ctx)
     this.godman = new Godman(ctx)
+    this.glow = new Glow(this.godman)
     this.gameinfo = new GameInfo()
     this.music = new Music()
 
@@ -278,7 +289,17 @@ export default class Main {
       && y <= toBegin.endY){
     
         databus.state = STATE.BEGIN
+        return
       }
+      let share = this.gameinfo.btnShare
+      if (x >= share.startX
+        && x <= share.endX
+        && y >= share.startY
+        && y <= share.endY){
+      
+          wx.shareAppMessage()
+          return
+        }
   }
 
   /**
@@ -298,6 +319,15 @@ export default class Main {
 
     this.player.drawToCanvas(ctx)
     this.godman.drawToCanvas(ctx)
+    if(Math.floor(databus.score / GLOW_SHOW_SCORE) > glowShowCount || glowShowTime > 0) {
+      if(Math.floor(databus.score / GLOW_SHOW_SCORE) > glowShowCount) {
+        glowShowCount++
+        glowShowTime = 2000 
+      }
+      glowShowTime -= 50 
+      this.glow.drawToCanvas(ctx)
+    }
+  
     if (this.badman) {
       this.badman.drawToCanvas(ctx)
     }
@@ -342,6 +372,7 @@ export default class Main {
 
     this.bg.update()
     this.godman.update()
+    this.glow.update(this.godman)
     if (this.badman) {
       this.badman.update()
     }
