@@ -1,4 +1,4 @@
-import Bullet from './bullet'
+import Bullet from './index'
 import DataBus  from '../databus'
 import { 
   LOVE_BULLET_IMG_SRC

@@ -53,26 +53,33 @@ export default class DataBus {
    * 此后不进入帧循环
    */
   removeLoveBullets(bullet) {
+
+    /**
+     * TODO: FIXME
+     * 非常 Trick 的方式 fix 一个bug
+     * 当 bullets 发生碰撞检测成功后，它的位置不会发生改变，此时该 bullets 不会主动被 remove，
+     * 而当下一个 未碰撞的 bullets 被离屏删除时，temp 与 bullet 不是一个变量，此时存入 pool 会使
+     * 弹道不再规律
+     * 
+     * 有时间换个方式再修
+     */
     let temp = this.loveBullets.shift()
-    // if (!temp) {
-    //   return
-    // }
+    while(temp && temp !== bullet) {
+      temp = this.loveBullets.shift()
+    }
 
     temp.visible = false
-
     this.pool.recover('loveBullet', bullet)
   }
 
   removeBadBullets(bullet) {
     let temp = this.badBullets.shift()
-
-    // if (!temp) {
-    //   return
-    // }
+    while(temp && temp !== bullet) {
+      temp = this.badBullets.shift()
+    }
 
     temp.visible = false
-
-    this.pool.recover('badBullte', bullet)
+    this.pool.recover('badBullet', bullet)
   }
 
   bullets() {

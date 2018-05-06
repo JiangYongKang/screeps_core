@@ -18,11 +18,11 @@ let rankData, lock, overBackData
 export default class GameInfo {
   renderGameScore(ctx, score) {
     ctx.fillStyle = "#ffffff"
-    ctx.font      = "20px Arial"
+    ctx.font      = "25px Arial"
 
     ctx.fillText(
-      '得分: ' + score,
-      10,
+      score,
+      15,
       30
     )
   }

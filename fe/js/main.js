@@ -1,5 +1,5 @@
 import Player from './player/index'
-import Obstacle from './npc/obstacle'
+import Obstacle from './element/obstacle'
 import Godman from './npc/godman'
 import Badman from './npc/badman'
 
@@ -9,13 +9,16 @@ import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
 import DataBus from './databus'
+import Lifebar from './element/lifebar'
 import { STATE } from './databus'
-import { 
+import { calcShootingIntervalFrames } from './utils/difficulty'
+import {
   MAX_LIFE,
   screenHeight,
   INCREMENT_WHEN_HIT_FRIEND_ZONED_CARD,
   INCREMENT_WHEN_HIT_GOD_MAN,
 } from './config/index'
+import ExecuteOnceWrapper from './utils/executeOnceWrapper'
 
 const GLOW_SHOW_SCORE = 5
 let glowShowCount = 0
@@ -24,10 +27,6 @@ let glowShowTime = 2000
 let life = MAX_LIFE
 let ctx = canvas.getContext('2d')
 let databus = new DataBus()
-let intervalID = null
-let appearredBadman = false
-// TODO: FIXME
-let badmanShootSpeed = 100
 
 /**
  * 游戏主函数
@@ -38,6 +37,7 @@ export default class Main {
     wx.login({
       success: function(res) {
         // console.log('code = ' + res.code)
+        console.log('code = ' + res.code)
         wx.getUserInfo({
           success: function(resp) {
             wx.request({
@@ -51,6 +51,8 @@ export default class Main {
               success: function(res) {
                 // console.log('登录成功!')
                 // console.log(res)
+                console.log('登录成功!')
+                console.log(res)
                 GameGlobal.user_info = {
                   id: res.data.wechat_user.id,
                   open_id: res.data.wechat_user.open_id
@@ -64,7 +66,6 @@ export default class Main {
 
     // 维护当前requestAnimationFrame的id
     this.aniId = 0
-    // this.restart()
     this.runGame()
   }
 
@@ -85,7 +86,7 @@ export default class Main {
 
     this.bindLoop = this.loop.bind(this)
     this.hasEventBind = false
-  
+
     databus.state = STATE.BEGIN
 
     // 清除上一局的动画
@@ -96,7 +97,9 @@ export default class Main {
       canvas
     )
 
-    life = MAX_LIFE
+    this.life = MAX_LIFE
+    this.lifebar = new Lifebar(ctx, this.life)
+    this.executeOnceWrapper = new ExecuteOnceWrapper()
   }
 
   restart() {
@@ -127,29 +130,26 @@ export default class Main {
       canvas
     )
 
-    life = MAX_LIFE
-    
-    this.badman = null
-    clearInterval(intervalID)
-    appearredBadman = false
+    this.life = MAX_LIFE
+    this.lifebar = new Lifebar(ctx, this.life)
+
+    this.clearBadman()
+    this.executeOnceWrapper.reset()
   }
 
   setupBadman() {
-    if (appearredBadman) {
-      return
-    }
-    appearredBadman = true
-    this.badman = new Badman(ctx)    
-    this.appearBadman()
-  }
-
-  appearBadman() {
+    this.badman = new Badman(ctx)
     this.badman.y = screenHeight + 80
-    intervalID = setInterval(() => {
+    this.badminAppearIntervalID = setInterval(() => {
       if (this.badman.y > screenHeight - 70) {
-        this.badman.y -= 1
+        this.badman.y -= 1.5
       }
     }, 1000/60);
+  }
+
+  clearBadman() {
+    this.badman = null
+    clearInterval(this.badminAppearIntervalID)
   }
 
   /**
@@ -182,8 +182,7 @@ export default class Main {
         }
       }
       // 被追者记分判断
-      if (this.godman.isCollideWith(bullet)) {
-        bullet.visible = false
+      if (!bullet.isPlaying && this.godman.isCollideWith(bullet)) {
         databus.score += INCREMENT_WHEN_HIT_GOD_MAN
         bullet.playAnimation()
       }
@@ -193,9 +192,9 @@ export default class Main {
       let badBullet = databus.badBullets[i]
       if (this.player.isCollideWith(badBullet))  {
         // 玩家被击中的效果
-        badBullet.visible = false
-        life -= 1
-        if(life <= 0) {
+        badBullet.playAnimation()
+        this.reduceLifeCount()
+        if(this.life <= 0) {
           databus.state = STATE.OVER
         }
         break
@@ -208,8 +207,8 @@ export default class Main {
       if (this.player.isCollideWith(obstacle)) {
 
         obstacle.playAnimation()
-        life -= 1
-        if(life <= 0) {
+        this.reduceLifeCount()
+        if(this.life <= 0) {
           databus.state = STATE.OVER
         }
         break
@@ -277,7 +276,7 @@ export default class Main {
       && x <= area.endX
       && y >= area.startY
       && y <= area.endY){
-    
+
         this.restart()
         return
       }
@@ -287,7 +286,7 @@ export default class Main {
       && x <= toBegin.endX
       && y >= toBegin.startY
       && y <= toBegin.endY){
-    
+
         databus.state = STATE.BEGIN
         return
       }
@@ -300,6 +299,11 @@ export default class Main {
           wx.shareAppMessage()
           return
         }
+  }
+
+  reduceLifeCount() {
+    this.life -= 1
+    this.lifebar.reduceLifeCount()
   }
 
   /**
@@ -338,13 +342,13 @@ export default class Main {
     })
 
     this.gameinfo.renderGameScore(ctx, databus.score)
-    this.gameinfo.renderPlayerLife(ctx, life)
+    this.lifebar.render(ctx)
 
     // 游戏初始化
     if(databus.state === STATE.BEGIN) {
       this.clearTouchEvent()
       this.gameinfo.renderGameBegin(ctx)
-  
+
       if (!this.hasEventBind) {
         this.hasEventBind = true
         this.touchHandler = this.beginTouchEventHandler
@@ -386,26 +390,21 @@ export default class Main {
 
     this.collisionDetection()
 
-    if (databus.frame % 20 === 0) {
+    if (databus.frame % 15 === 0) {
       this.player.shoot()
       this.music.playShoot()
     }
 
     // TODO: FIXME
-    if (databus.frame % badmanShootSpeed === 0 && this.badman) {
+    if (databus.frame % calcShootingIntervalFrames(databus.score) === 0 && this.badman) {
       this.badman.shoot()
     }
 
-    if (databus.score > 10) {
-      this.setupBadman()
+    if (databus.score > 9) {
+      this.executeOnceWrapper.executeOnce(() => {
+        this.setupBadman()
+      })
     }
-
-    this.updateBadmanShootSpeed()
-  }
-
-  updateBadmanShootSpeed() {
-    const maxBadmanShootSpeed = 30
-    badmanShootSpeed = Math.max(maxBadmanShootSpeed, 100 - databus.score * 2)
   }
 
   // 实现游戏帧循环
@@ -420,7 +419,7 @@ export default class Main {
       canvas
     )
   }
-  
+
   //清除touch事件
   clearTouchEvent() {
     canvas.removeEventListener(
