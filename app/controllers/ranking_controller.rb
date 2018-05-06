@@ -6,7 +6,8 @@ class RankingController < ApplicationController
 
   def show
     wechat_user.update!(max_score: show_params['max_score'])
-    @rank = WechatUser.where("max_score > #{wechat_user.max_score}").count + 1
+    @rank = WechatUser.where("max_score >= ?", wechat_user.max_score).count
+    @nickname = wechat_user.nickname
     render :show, formats: [:json], layout: nil
   end
 
