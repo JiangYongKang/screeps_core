@@ -1,4 +1,4 @@
-
+import godmanGrade from '../npc/godmanGrade'
 const screenWidth  = window.innerWidth
 const screenHeight = window.innerHeight
 
@@ -53,7 +53,7 @@ export default class GameInfo {
       endY  : screenHeight / 2 + offsetY * 152 + offsetY * 55
     }
     this.btnRank = {
-      startX: screenWidth / 2 - offsetX * 28.5,
+      startX: screenWidth / 2 - offsetX * 28.5 - 40,
       startY: screenHeight - 72 * offsetY - offsetX * 28.5,
       endX  : screenWidth / 2 + offsetX * 28.5,
       endY  : screenHeight - 72 * offsetY + offsetX * 28.5
@@ -195,6 +195,11 @@ export default class GameInfo {
     } catch(e) {
       
     }
+  }
+
+  renderGodmanGrade(ctx, store) {
+    ctx.drawImage(begin, 0, 0, screenWidth, screenHeight)
+    godmanGrade.render(ctx, store)
   }
 }
 

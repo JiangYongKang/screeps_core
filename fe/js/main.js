@@ -242,6 +242,13 @@ export default class Main {
         databus.state = STATE.RANK
         this.gameinfo.renderRank(ctx)
       }
+
+    if (x >= rank.startX + 50
+      && x <= rank.endX + 50
+      && y >= rank.startY
+      && y <= rank.endY) {
+      databus.state = STATE.GRADE
+  }
   }
 
    //rank 触摸事件
@@ -260,6 +267,15 @@ export default class Main {
       {
         databus.state = STATE.BEGIN
       }
+  }
+
+  gradeEventHandler = (e) => {
+    e.preventDefault()
+
+    let x = e.touches[0].clientX
+    let y = e.touches[0].clientY
+
+    databus.state = STATE.BEGIN
   }
 
   // 游戏结束后的触摸事件处理逻辑
@@ -365,6 +381,12 @@ export default class Main {
     if (databus.state === STATE.OVER) {
       this.gameinfo.renderGameOver(ctx, databus.score)
       this.bindTouchEvent(this.touchEventHandler)
+    }
+
+    if (databus.state === STATE.GRADE) {
+      this.clearTouchEvent()
+      this.gameinfo.renderGodmanGrade(ctx, databus.score)
+      this.bindTouchEvent(this.gradeEventHandler)
     }
   }
 
