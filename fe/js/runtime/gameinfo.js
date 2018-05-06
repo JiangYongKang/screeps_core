@@ -190,7 +190,7 @@ export default class GameInfo {
     ctx.stroke()
   
     const test = new Image()
-    let num = Math.floor(score / 5)
+    let num = Math.floor(score / 50)
 
     if(num > 3){
       num = 3
