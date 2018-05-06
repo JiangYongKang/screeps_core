@@ -12,7 +12,7 @@ export default class Music {
 
     this.bgmAudio = new Audio()
     this.bgmAudio.loop = true
-    this.bgmAudio.src  = 'audio/bgm.mp3'
+    this.bgmAudio.src  = 'audio/bgm1.mp3'
 
     this.shootAudio     = new Audio()
     this.shootAudio.src = 'audio/bullet.mp3'

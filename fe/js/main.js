@@ -34,9 +34,10 @@ let databus = new DataBus()
 export default class Main {
   constructor() {
 
+    // TODO: 请不要修改 login 的代码，包括 console.log
     wx.login({
       success: function(res) {
-        // console.log('code = ' + res.code)
+        console.log('code = ' + res.code)
         console.log('code = ' + res.code)
         wx.getUserInfo({
           success: function(resp) {
@@ -49,8 +50,6 @@ export default class Main {
                 picture: resp.userInfo.avatarUrl,
               },
               success: function(res) {
-                // console.log('登录成功!')
-                // console.log(res)
                 console.log('登录成功!')
                 console.log(res)
                 GameGlobal.user_info = {
@@ -243,6 +242,13 @@ export default class Main {
         databus.state = STATE.RANK
         this.gameinfo.renderRank(ctx)
       }
+
+    if (x >= rank.startX + 50
+      && x <= rank.endX + 50
+      && y >= rank.startY
+      && y <= rank.endY) {
+      databus.state = STATE.GRADE
+  }
   }
 
    //rank 触摸事件
@@ -261,6 +267,15 @@ export default class Main {
       {
         databus.state = STATE.BEGIN
       }
+  }
+
+  gradeEventHandler = (e) => {
+    e.preventDefault()
+
+    let x = e.touches[0].clientX
+    let y = e.touches[0].clientY
+
+    databus.state = STATE.BEGIN
   }
 
   // 游戏结束后的触摸事件处理逻辑
@@ -295,7 +310,7 @@ export default class Main {
         && x <= share.endX
         && y >= share.startY
         && y <= share.endY){
-      
+
           wx.shareAppMessage()
           return
         }
@@ -326,12 +341,12 @@ export default class Main {
     if(Math.floor(databus.score / GLOW_SHOW_SCORE) > glowShowCount || glowShowTime > 0) {
       if(Math.floor(databus.score / GLOW_SHOW_SCORE) > glowShowCount) {
         glowShowCount++
-        glowShowTime = 2000 
+        glowShowTime = 2000
       }
-      glowShowTime -= 50 
+      glowShowTime -= 50
       this.glow.drawToCanvas(ctx)
     }
-  
+
     if (this.badman) {
       this.badman.drawToCanvas(ctx)
     }
@@ -366,6 +381,12 @@ export default class Main {
     if (databus.state === STATE.OVER) {
       this.gameinfo.renderGameOver(ctx, databus.score)
       this.bindTouchEvent(this.touchEventHandler)
+    }
+
+    if (databus.state === STATE.GRADE) {
+      this.clearTouchEvent()
+      this.gameinfo.renderGodmanGrade(ctx, databus.score)
+      this.bindTouchEvent(this.gradeEventHandler)
     }
   }
 
