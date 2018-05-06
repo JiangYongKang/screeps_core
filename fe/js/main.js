@@ -20,7 +20,7 @@ import {
 } from './config/index'
 import ExecuteOnceWrapper from './utils/executeOnceWrapper'
 
-const GLOW_SHOW_SCORE = 5
+const GLOW_SHOW_SCORE = 30
 let glowShowCount = 0
 let glowShowTime = 2000
 

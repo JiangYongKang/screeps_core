@@ -5,6 +5,13 @@ const screenHeight = window.innerHeight
 const offsetX = screenWidth / 414
 const offsetY = screenHeight / 736
 
+const overText= [
+  'images/over_text/0-50.png',
+  'images/over_text/51-100.png',
+  'images/over_text/101-150.png',
+  'images/over_text/151-200.png',
+]
+
 let over = new Image()
 over.src = 'images/over_bg.png'
 
@@ -40,10 +47,7 @@ export default class GameInfo {
 
   renderGameBegin(ctx) {
 
-    // ctx.drawImage(over, 0, 0, screenWidth, screenHeight)
-    // ctx.arc(screenWidth / 2 - offsetX * 81, screenHeight /2 + offsetY *210, offsetX * 22, 0 ,2 * Math.PI)
-    // ctx.rect(screenWidth / 2 - 9, screenHeight / 2 - 24, 20, 25)
-    // ctx.stroke()
+
     ctx.drawImage(begin, 0, 0, screenWidth, screenHeight)
   
     this.btnBegin = {
@@ -136,12 +140,63 @@ export default class GameInfo {
   }
 
   renderGameOver(ctx, score) {
-  
-  
+    let x = screenWidth / 2 - 120
+    try{
+      if(!overBackData && !lock) {
+        lock = true
+        wx.request({
+          method: 'GET',
+          url: `https://strikingly-game-jam.herokuapp.com/ranking/${GameGlobal.user_info.id}?max_score=${score}`,
+          success: function(res) {
+            lock = false
+         
+            overBackData = res
+            if(res.statusCode === 200) {
+              console.log(res)
+              overBackData = res.data
+              ctx.fillStyle = "#ffffff"
+              ctx.font    = "18px 微软雅黑"
+              ctx.fillText(
+                `${overBackData.nickname}`,
+                x + 70,
+                screenHeight / 2 + 105
+              )
+              ctx.fillText(
+                `${overBackData.rank}.`,
+                x,
+                screenHeight / 2 + 105
+              )
+              ctx.fillText(
+                score,
+                x + 200,
+                screenHeight / 2 + 105
+              )
+            }
+         
+          
+          }
+        })
+      }
+    } catch(e) {
+      
+    }
     
     
     ctx.drawImage(over, 0, 0, screenWidth, screenHeight)
 
+    // 文本
+    ctx.fillStyle = '#F2a2ae'
+    ctx.fillRect(screenWidth / 2 - 120, screenHeight / 2 - 160, 250, 40)
+    ctx.stroke()
+  
+    const test = new Image()
+    const num = Math.floor(score / 5)
+    test.src = overText[num]
+    let height1 = 46
+    if(num === 1){
+      height1 = height1/2
+    }
+    ctx.drawImage(test, screenWidth / 2 - 120, screenHeight / 2 - 160, 250, height1)
 
     ctx.fillStyle = "#ffffff"
     ctx.font    = "35px 微软雅黑"
@@ -151,6 +206,25 @@ export default class GameInfo {
       screenWidth / 2 - 12,
       screenHeight / 2 - 60
     )
+    ctx.font    = "18px 微软雅黑"
+    if(overBackData){
+      ctx.fillText(
+        `${overBackData.nickname}`,
+        x + 70,
+        screenHeight / 2 + 105
+      )
+      ctx.fillText(
+        `${overBackData.rank}.`,
+        x,
+        screenHeight / 2 + 105
+      )
+      ctx.fillText(
+        score,
+        x + 200,
+        screenHeight / 2 + 105
+      )
+    }
+  
     /**
      * 重新开始按钮区域
      * 方便简易判断按钮点击
@@ -174,27 +248,7 @@ export default class GameInfo {
       endY  : screenHeight / 2 - offsetY * 24 + offsetY * 25
     }
 
-    try{
-      if(!overBackData && !lock) {
-        lock = true
-        wx.request({
-          method: 'GET',
-          url: `https://strikingly-game-jam.herokuapp.com/ranking/${GameGlobal.user_info.id}?max_score=${score}`,
-          success: function(res) {
-            lock = false
-         
-            overBackData = res
-            if(res.statusCode === 200) {
-              console.log(res)
-              // overBackData = res.data.ranking
-            }
-           
-          }
-        })
-      }
-    } catch(e) {
-      
-    }
+   
   }
 }
 
